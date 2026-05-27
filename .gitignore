@@ -1,4 +1,18 @@
 node_modules
 dist
 .env
+.env.local
 *.local
+
+# Claude local config
+.claude/settings.local.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
