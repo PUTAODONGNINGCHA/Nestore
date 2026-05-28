@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { FolderPlus, Upload } from 'lucide-react'
-import { FileItemRow } from './FileItem'
+import { FileItemCard } from './FileItemGrid'
 import { Breadcrumb } from './Breadcrumb'
 import { EmptyState } from './EmptyState'
 import { MoveFileDialog } from './MoveFileDialog'
@@ -55,10 +55,16 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
   const handleDownload = async (file: FileItem) => {
     try {
       const url = await getStorageAdapter().getDownloadUrl(file.storage_path)
+      const response = await fetch(url)
+      const blob = await response.blob()
+      const blobUrl = URL.createObjectURL(blob)
       const a = document.createElement('a')
-      a.href = url
+      a.href = blobUrl
       a.download = file.name
+      document.body.appendChild(a)
       a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(blobUrl)
     } catch {
       alert('下载失败')
     }
@@ -78,7 +84,7 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
   return (
     <div className="flex-1 flex flex-col min-w-0">
       {/* Toolbar */}
-      <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-3 sm:px-4 lg:px-6 py-2.5">
+      <div className="bg-[#E0E5EC] dark:bg-[#1a1d23] px-3 sm:px-4 lg:px-6 py-2.5">
         <div className="flex items-center justify-between gap-2">
           <div className="min-w-0 flex-1 overflow-x-auto">
             <Breadcrumb crumbs={crumbs} onNavigate={onNavigate} />
@@ -100,7 +106,7 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
                     value={newFolderName}
                     onChange={(e) => setNewFolderName(e.target.value)}
                     placeholder="文件夹名称"
-                    className="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-lg w-48"
+                    className="px-4 py-2.5 text-sm rounded-[16px] bg-[#E0E5EC] dark:bg-[#1a1d23] text-[#3D4852] dark:text-[#E8ECF1] placeholder-[#A0AEC0] dark:placeholder-[#6B7280] shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)] focus:outline-none focus:ring-2 focus:ring-[#6C63FF] focus:ring-offset-2 focus:ring-offset-[#E0E5EC] dark:focus:ring-offset-[#1a1d23] w-48 transition-all duration-200"
                     autoFocus
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') handleCreateFolder()
@@ -117,12 +123,12 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
 
       {/* Upload zone & progress */}
       <div className="px-3 sm:px-4 lg:px-6 pt-3">
-        <FileUploader onDrop={handleDrop} isUploading={isUploading} />
+        <FileUploader onDrop={handleDrop} />
       </div>
 
       {/* Upload button for mobile */}
       <div className="px-3 sm:px-4 lg:px-6 pt-2 sm:hidden">
-        <label className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:border-blue-400 hover:text-blue-500 transition-colors cursor-pointer">
+        <label className="flex items-center justify-center gap-2 w-full py-3.5 rounded-[16px] bg-[#E0E5EC] dark:bg-[#1a1d23] text-[#6B7280] dark:text-[#9CA3AF] shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)] hover:shadow-[inset_6px_6px_10px_rgb(163_177_198_/_0.6),inset_-6px_-6px_10px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_6px_6px_10px_rgb(0_0_0_/_0.4),inset_-6px_-6px_10px_rgba(255,255,255,0.05)] transition-all duration-200 cursor-pointer">
           <Upload className="w-5 h-5" />
           <span className="text-sm font-medium">选择文件上传</span>
           <input
@@ -139,31 +145,33 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
       </div>
 
       {/* File list */}
-      <div className="flex-1 overflow-y-auto px-3 sm:px-4 lg:px-6 py-3">
+      <div className="flex-1 overflow-y-auto px-3 sm:px-4 lg:px-6 py-3 scrollbar-thin">
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+            <div className="neumo-spinner" />
           </div>
         ) : allItems.length === 0 ? (
           <EmptyState />
         ) : (
-          <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 divide-y divide-gray-100 dark:divide-gray-800">
-            {allItems.map((item) => (
-              <FileItemRow
-                key={item.type === 'folder' ? `f-${item.data.id}` : `file-${item.data.id}`}
-                item={item.data}
-                type={item.type}
-                onNavigate={(id) => onNavigate(id)}
-                onPreview={(file) => setPreviewFile(file)}
-                onDownload={handleDownload}
-                onMove={(file) => setMoveFile(file)}
-                onRename={(id, name) => {
-                  if (item.type === 'folder') renameFolder(id, name)
-                  else renameFile(id, name)
-                }}
-                onDelete={(id) => handleDelete(id, item.type)}
-              />
-            ))}
+          <div className="bg-[#E0E5EC] dark:bg-[#1a1d23] rounded-[32px] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgb(0_0_0_/_0.4),-9px_-9px_16px_rgba(255,255,255,0.05)] p-4 sm:p-5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+              {allItems.map((item) => (
+                <FileItemCard
+                  key={item.type === 'folder' ? `f-${item.data.id}` : `file-${item.data.id}`}
+                  item={item.data}
+                  type={item.type}
+                  onNavigate={(id) => onNavigate(id)}
+                  onPreview={(file) => setPreviewFile(file)}
+                  onDownload={handleDownload}
+                  onMove={(file) => setMoveFile(file)}
+                  onRename={(id, name) => {
+                    if (item.type === 'folder') renameFolder(id, name)
+                    else renameFile(id, name)
+                  }}
+                  onDelete={(id) => handleDelete(id, item.type)}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -172,7 +180,7 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
       {isUploading && (
         <div className="px-3 sm:px-4 lg:px-6 pb-3">
           <ProgressBar progress={50} />
-          <p className="text-xs text-gray-400 mt-1">正在上传...</p>
+          <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] mt-1">正在上传...</p>
         </div>
       )}
 

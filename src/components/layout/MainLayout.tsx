@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import { LogOut, Cloud } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 
 interface MainLayoutProps {
@@ -9,13 +9,18 @@ interface MainLayoutProps {
 
 export function MainLayout({ children, onLogout }: MainLayoutProps) {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
-      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 lg:px-6">
+    <div className="min-h-screen bg-[#E0E5EC] dark:bg-[#1a1d23] flex flex-col">
+      <header className="bg-[#E0E5EC] dark:bg-[#1a1d23] px-4 lg:px-6 sticky top-0 z-40">
         <div className="h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-gray-900 dark:text-white">
-              <Cloud className="w-5 h-5 text-blue-600" />
-              <span className="font-semibold text-lg hidden sm:inline">家庭云盘</span>
+            <div className="flex items-center gap-2 text-[#3D4852] dark:text-[#E8ECF1]">
+              {/* Neumorphic logo icon well */}
+              <div className="w-8 h-8 rounded-xl bg-[#E0E5EC] dark:bg-[#1a1d23] shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)] flex items-center justify-center">
+                <svg className="w-4 h-4 text-[#6C63FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                </svg>
+              </div>
+              <span className="font-bold text-lg hidden sm:inline font-display tracking-tight">家庭云盘</span>
             </div>
           </div>
           <Button variant="ghost" size="sm" onClick={onLogout}>
@@ -24,7 +29,7 @@ export function MainLayout({ children, onLogout }: MainLayoutProps) {
           </Button>
         </div>
       </header>
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden px-4 lg:px-6 pb-4 gap-4">
         {children}
       </div>
     </div>

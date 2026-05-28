@@ -45,10 +45,16 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
   const handleDownload = async () => {
     try {
       const url = await getStorageAdapter().getDownloadUrl(file.storage_path)
+      const response = await fetch(url)
+      const blob = await response.blob()
+      const blobUrl = URL.createObjectURL(blob)
       const a = document.createElement('a')
-      a.href = url
+      a.href = blobUrl
       a.download = file.name
+      document.body.appendChild(a)
       a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(blobUrl)
     } catch {
       alert('下载失败')
     }
@@ -58,11 +64,11 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
     <Modal isOpen onClose={onClose} title={file.name}>
       {isLoading ? (
         <div className="flex items-center justify-center py-16">
-          <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <div className="neumo-spinner" />
         </div>
       ) : error ? (
         <div className="text-center py-16">
-          <p className="text-red-500 mb-4">{error}</p>
+          <p className="text-red-500 dark:text-red-400 mb-4 font-medium">{error}</p>
           <Button variant="primary" onClick={handleDownload}>下载文件</Button>
         </div>
       ) : (
@@ -70,12 +76,12 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
           {isImage && signedUrl && <ImagePreview src={signedUrl} name={file.name} />}
           {isVideo && signedUrl && <VideoPreview src={signedUrl} name={file.name} />}
           {isPdf && signedUrl && (
-            <iframe src={signedUrl} className="w-full h-[70vh] rounded-lg" title={file.name} />
+            <iframe src={signedUrl} className="w-full h-[70vh] rounded-[16px]" title={file.name} />
           )}
           {isText && textContent !== null && <TextPreview content={textContent} />}
           {!isImage && !isVideo && !isPdf && !isText && (
             <div className="text-center py-16">
-              <p className="text-gray-500 dark:text-gray-400 mb-4">暂不支持预览此文件类型</p>
+              <p className="text-[#6B7280] dark:text-[#9CA3AF] mb-4 font-medium">暂不支持预览此文件类型</p>
               <Button variant="primary" onClick={handleDownload}>下载文件</Button>
             </div>
           )}

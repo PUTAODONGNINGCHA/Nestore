@@ -1,13 +1,13 @@
 import { useState, type FormEvent } from 'react'
-import { FolderPlus } from 'lucide-react'
+import { FolderPlus, Folder } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import type { Folder } from '@/types'
+import type { Folder as FolderType } from '@/types'
 
 interface SidebarProps {
   currentFolderId: string | null
   onNavigate: (folderId: string | null) => void
   onCreateFolder: (name: string) => Promise<{ id: string } | void>
-  folders: Folder[]
+  folders: FolderType[]
 }
 
 export function Sidebar({ currentFolderId, onNavigate, onCreateFolder, folders }: SidebarProps) {
@@ -23,8 +23,8 @@ export function Sidebar({ currentFolderId, onNavigate, onCreateFolder, folders }
   }
 
   return (
-    <aside className="w-56 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col hidden md:flex">
-      <div className="p-3 border-b border-gray-100 dark:border-gray-800">
+    <aside className="w-56 bg-[#E0E5EC] dark:bg-[#1a1d23] rounded-[32px] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgb(0_0_0_/_0.4),-9px_-9px_16px_rgba(255,255,255,0.05)] flex flex-col hidden md:flex overflow-hidden">
+      <div className="p-3">
         <Button
           variant="secondary"
           size="sm"
@@ -41,7 +41,7 @@ export function Sidebar({ currentFolderId, onNavigate, onCreateFolder, folders }
               value={folderName}
               onChange={(e) => setFolderName(e.target.value)}
               placeholder="文件夹名称"
-              className="w-full px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm rounded-[16px] bg-[#E0E5EC] dark:bg-[#1a1d23] text-[#3D4852] dark:text-[#E8ECF1] placeholder-[#A0AEC0] dark:placeholder-[#6B7280] shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)] focus:outline-none focus:ring-2 focus:ring-[#6C63FF] focus:ring-offset-2 focus:ring-offset-[#E0E5EC] dark:focus:ring-offset-[#1a1d23] transition-all duration-200"
               autoFocus
               onBlur={() => { setTimeout(() => setShowInput(false), 200) }}
             />
@@ -49,36 +49,34 @@ export function Sidebar({ currentFolderId, onNavigate, onCreateFolder, folders }
         )}
       </div>
 
-      <nav className="flex-1 overflow-y-auto p-2 space-y-0.5">
+      <nav className="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-thin">
         <button
-          className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+          className={`w-full text-left px-3 py-2.5 rounded-[16px] text-sm transition-all duration-200 font-medium ${
             currentFolderId === null
-              ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-              : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
+              ? 'bg-[#E0E5EC] dark:bg-[#1a1d23] text-[#6C63FF] shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)]'
+              : 'text-[#3D4852] dark:text-[#E8ECF1] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)]'
           }`}
           onClick={() => onNavigate(null)}
         >
           <div className="flex items-center gap-2">
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" opacity={0.7}>
-              <path d="M2 6a2 2 0 012-2h5l2 2h9a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
-            </svg>
+            <Folder className="w-4 h-4 shrink-0" />
             全部文件
           </div>
         </button>
         {folders.map((folder) => (
           <button
             key={folder.id}
-            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${
+            className={`w-full text-left px-3 py-2.5 rounded-[16px] text-sm transition-all duration-200 ${
               currentFolderId === folder.id
-                ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
+                ? 'bg-[#E0E5EC] dark:bg-[#1a1d23] text-[#6C63FF] shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)]'
+                : 'text-[#3D4852] dark:text-[#E8ECF1] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)]'
             }`}
             onClick={() => onNavigate(folder.id)}
           >
-            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor" opacity={0.7}>
-              <path d="M2 6a2 2 0 012-2h5l2 2h9a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
-            </svg>
-            <span className="truncate">{folder.name}</span>
+            <div className="flex items-center gap-2">
+              <Folder className="w-4 h-4 shrink-0" />
+              <span className="truncate">{folder.name}</span>
+            </div>
           </button>
         ))}
       </nav>

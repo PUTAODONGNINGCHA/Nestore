@@ -16,7 +16,7 @@ import { formatFileSize, getFileIcon } from '@/lib/utils'
 import { getStorageAdapter } from '@/storage/factory'
 import type { FileItem as FileItemType, Folder as FolderType } from '@/types'
 
-interface FileItemProps {
+interface FileItemCardProps {
   item: FileItemType | FolderType
   type: 'file' | 'folder'
   onNavigate?: (folderId: string) => void
@@ -57,7 +57,7 @@ function Thumbnail({ file }: { file: FileItemType }) {
       <img
         src={thumbUrl}
         alt={file.name}
-        className="w-9 h-9 rounded-xl object-cover shrink-0"
+        className="w-full h-full object-cover"
         loading="lazy"
       />
     )
@@ -66,7 +66,7 @@ function Thumbnail({ file }: { file: FileItemType }) {
   return null
 }
 
-export function FileItemRow({ item, type, onNavigate, onPreview, onDownload, onMove, onRename, onDelete }: FileItemProps) {
+export function FileItemCard({ item, type, onNavigate, onPreview, onDownload, onMove, onRename, onDelete }: FileItemCardProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuPos, setMenuPos] = useState({ x: 0, y: 0 })
   const [isRenaming, setIsRenaming] = useState(false)
@@ -110,18 +110,24 @@ export function FileItemRow({ item, type, onNavigate, onPreview, onDownload, onM
   return (
     <>
       <div
-        className="flex items-center gap-3 px-4 py-2.5 rounded-[16px] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] cursor-pointer group transition-all duration-200"
+        className="group relative bg-[#E0E5EC] dark:bg-[#1a1d23] rounded-[32px] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgb(0_0_0_/_0.4),-9px_-9px_16px_rgba(255,255,255,0.05)] hover:shadow-[12px_12px_20px_rgb(163_177_198_/_0.7),-12px_-12px_20px_rgba(255,255,255,0.6)] dark:hover:shadow-[12px_12px_20px_rgb(0_0_0_/_0.5),-12px_-12px_20px_rgba(255,255,255,0.05)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_6px_6px_10px_rgb(163_177_198_/_0.6),inset_-6px_-6px_10px_rgba(255,255,255,0.5)] dark:active:shadow-[inset_6px_6px_10px_rgb(0_0_0_/_0.4),inset_-6px_-6px_10px_rgba(255,255,255,0.05)] cursor-pointer transition-all duration-300 p-4 flex flex-col items-center gap-2"
         onContextMenu={handleContextMenu}
         onClick={handleClick}
       >
-        {isImage ? (
-          <Thumbnail file={fileItem} />
-        ) : (
-          <div className="w-9 h-9 rounded-xl bg-[#E0E5EC] dark:bg-[#1a1d23] shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)] flex items-center justify-center shrink-0">
-            <Icon className={`w-4 h-4 ${type === 'folder' ? 'text-[#38B2AC]' : 'text-[#6C63FF]'}`} />
-          </div>
-        )}
+        {/* Icon / Thumbnail area */}
+        <div className="relative w-20 h-20 shrink-0">
+          {isImage ? (
+            <div className="w-full h-full rounded-2xl overflow-hidden shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)]">
+              <Thumbnail file={fileItem} />
+            </div>
+          ) : (
+            <div className="w-full h-full rounded-2xl bg-[#E0E5EC] dark:bg-[#1a1d23] shadow-[inset_6px_6px_10px_rgb(163_177_198_/_0.6),inset_-6px_-6px_10px_rgba(255,255,255,0.5)] dark:shadow-[inset_6px_6px_10px_rgb(0_0_0_/_0.4),inset_-6px_-6px_10px_rgba(255,255,255,0.05)] flex items-center justify-center">
+              <Icon className={`w-10 h-10 ${type === 'folder' ? 'text-[#38B2AC]' : 'text-[#6C63FF]'}`} />
+            </div>
+          )}
+        </div>
 
+        {/* Name / Rename input */}
         {isRenaming ? (
           <input
             ref={inputRef}
@@ -133,53 +139,47 @@ export function FileItemRow({ item, type, onNavigate, onPreview, onDownload, onM
               if (e.key === 'Enter') submitRename()
               if (e.key === 'Escape') setIsRenaming(false)
             }}
-            className="flex-1 min-w-0 px-3 py-1 text-sm rounded-xl bg-[#E0E5EC] dark:bg-[#1a1d23] text-[#3D4852] dark:text-[#E8ECF1] shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)] focus:outline-none focus:ring-2 focus:ring-[#6C63FF]"
+            className="w-full px-2 py-1 text-xs text-center rounded-xl bg-[#E0E5EC] dark:bg-[#1a1d23] text-[#3D4852] dark:text-[#E8ECF1] shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)] focus:outline-none focus:ring-2 focus:ring-[#6C63FF]"
             onClick={(e) => e.stopPropagation()}
           />
         ) : (
-          <span className="flex-1 min-w-0 text-sm text-[#3D4852] dark:text-[#E8ECF1] truncate">{item.name}</span>
+          <div className="w-full text-center min-w-0">
+            <p className="text-xs font-medium text-[#3D4852] dark:text-[#E8ECF1] truncate leading-tight">{item.name}</p>
+            {isFile && (
+              <p className="text-[10px] text-[#6B7280] dark:text-[#9CA3AF] mt-0.5">
+                {formatFileSize(fileItem.size)}
+              </p>
+            )}
+          </div>
         )}
 
-        {isFile && (
-          <>
-            <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF] w-16 text-right shrink-0 hidden sm:block">
-              {formatFileSize(fileItem.size)}
-            </span>
-            <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF] w-20 text-right shrink-0 hidden md:block">
-              {new Date(fileItem.created_at).toLocaleDateString('zh-CN', {
-                month: 'short',
-                day: 'numeric',
-              })}
-            </span>
-          </>
-        )}
-
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+        {/* Action buttons — visible on hover */}
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           {isFile && onMove && (
             <button
               onClick={(e) => { e.stopPropagation(); onMove(fileItem) }}
-              className="p-1.5 rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] transition-all duration-200"
+              className="w-8 h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] transition-all duration-200"
               title="移动"
             >
-              <Move className="w-4 h-4" />
+              <Move className="w-3.5 h-3.5" />
             </button>
           )}
           {isFile && onDownload && (
             <button
               onClick={(e) => { e.stopPropagation(); onDownload(fileItem) }}
-              className="p-1.5 rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] transition-all duration-200"
+              className="w-8 h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] transition-all duration-200"
               title="下载"
             >
-              <Download className="w-4 h-4" />
+              <Download className="w-3.5 h-3.5" />
             </button>
           )}
           {onDelete && (
             <button
               onClick={(e) => { e.stopPropagation(); onDelete(item.id) }}
-              className="p-1.5 rounded-xl text-[#6B7280] hover:text-red-500 hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] transition-all duration-200"
+              className="w-8 h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-red-500 hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] transition-all duration-200"
               title="删除"
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="w-3.5 h-3.5" />
             </button>
           )}
         </div>
