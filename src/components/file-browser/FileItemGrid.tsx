@@ -178,7 +178,7 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
               if (e.key === 'Enter') submitRename()
               if (e.key === 'Escape') setIsRenaming(false)
             }}
-            className="w-full px-2 py-1 text-xs text-center rounded-[16px] bg-[#EFEBF5] text-[#332F3A] shadow-[inset_6px_6px_12px_#d9d4e3,inset_-6px_-6px_12px_#ffffff] focus:outline-none focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20"
+            className="w-full px-2 py-1 text-xs text-center rounded-[16px] bg-[#EFEBF5] text-[#332F3A] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#7C3AED]/30"
             onClick={(e) => e.stopPropagation()}
           />
         ) : (
@@ -197,7 +197,7 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
           {isFile && onDownload && (
             <button
               onClick={(e) => { e.stopPropagation(); onDownload(fileItem) }}
-              className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-[16px] text-[#635F69] hover:text-[#7C3AED] hover:bg-white/50 active:bg-white/70 active:shadow-[inset_4px_4px_8px_#d9d4e3,inset_-4px_-4px_8px_#ffffff] transition-all duration-200"
+              className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-[16px] text-[#635F69] hover:text-[#7C3AED] hover:bg-white/50 active:bg-white/70 active:shadow-[inset_4px_4px_8px_#d9d4e3,inset_-4px_-4px_8px_#ffffff] transition-all duration-200 cursor-pointer"
               title="下载"
             >
               <Download className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
@@ -206,7 +206,7 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
           <button
             ref={moreRef}
             onClick={handleOpenMenu}
-            className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-[16px] text-[#635F69] hover:text-[#7C3AED] hover:bg-white/50 active:bg-white/70 active:shadow-[inset_4px_4px_8px_#d9d4e3,inset_-4px_-4px_8px_#ffffff] transition-all duration-200"
+            className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-[16px] text-[#635F69] hover:text-[#7C3AED] hover:bg-white/50 active:bg-white/70 active:shadow-[inset_4px_4px_8px_#d9d4e3,inset_-4px_-4px_8px_#ffffff] transition-all duration-200 cursor-pointer"
             title="更多"
           >
             <MoreVertical className="w-4 h-4 sm:w-3.5 sm:h-3.5" />

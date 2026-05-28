@@ -198,6 +198,13 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
                       onDownload={handleDownload}
                       onMove={(file) => setMoveFile(file)}
                       onRename={(id, name) => {
+                        const exists = item.type === 'folder'
+                          ? folders.some((f) => f.id !== id && f.name === name)
+                          : files.some((f) => f.id !== id && f.name === name)
+                        if (exists) {
+                          alert(`已存在同名${item.type === 'folder' ? '文件夹' : '文件'}`)
+                          return
+                        }
                         if (item.type === 'folder') onRenameFolder(id, name)
                         else renameFile(id, name)
                       }}
