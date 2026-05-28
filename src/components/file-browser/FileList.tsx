@@ -12,7 +12,6 @@ import { Breadcrumb } from './Breadcrumb'
 import { EmptyState } from './EmptyState'
 import { MoveFileDialog } from './MoveFileDialog'
 import { useFiles } from '@/hooks/useFiles'
-import { useFolders } from '@/hooks/useFolders'
 import { useUpload } from '@/hooks/useUpload'
 import { useBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { FileUploader } from '@/components/upload/FileUploader'
@@ -24,6 +23,10 @@ import type { FileItem } from '@/types'
 interface FileListProps {
   currentFolderId: string | null
   onNavigate: (folderId: string | null) => void
+  folders: import('@/types').Folder[]
+  onRenameFolder: (id: string, name: string) => Promise<void>
+  onRemoveFolder: (id: string) => Promise<void>
+  onRefreshFolders: () => Promise<void>
 }
 
 type Entry = { type: 'folder'; data: import('@/types').Folder } | { type: 'file'; data: FileItem }
@@ -32,12 +35,11 @@ function getSortId(entry: Entry) {
   return entry.type === 'folder' ? `folder-${entry.data.id}` : `file-${entry.data.id}`
 }
 
-export function FileList({ currentFolderId, onNavigate }: FileListProps) {
+export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder, onRemoveFolder, onRefreshFolders }: FileListProps) {
   const uploadInputRef = useRef<HTMLInputElement>(null)
-  const { folders, isLoading: foldersLoading, error: foldersError, refresh: refreshFolders, rename: renameFolder, remove: removeFolder } = useFolders(currentFolderId)
   const { files, isLoading: filesLoading, error: filesError, refresh: refreshFiles, rename: renameFile, remove: removeFile } = useFiles(currentFolderId)
   const { crumbs } = useBreadcrumbs(currentFolderId)
-  const { isUploading, progress, error: uploadError, uploadMultiple } = useUpload(currentFolderId, () => { refreshFiles(); refreshFolders() })
+  const { isUploading, progress, error: uploadError, uploadMultiple } = useUpload(currentFolderId, () => { refreshFiles(); onRefreshFolders() })
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null)
   const [moveFile, setMoveFile] = useState<FileItem | null>(null)
   const [orderedItems, setOrderedItems] = useState<Entry[]>([])
@@ -51,7 +53,7 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
     setOrderedItems(items)
   }, [folders, files])
 
-  const isLoading = foldersLoading || filesLoading
+  const isLoading = filesLoading
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
@@ -83,14 +85,14 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
     } catch {
       // Refresh from server on failure
       refreshFiles()
-      refreshFolders()
+      onRefreshFolders()
     }
-  }, [orderedItems, refreshFiles, refreshFolders])
+  }, [orderedItems, refreshFiles, onRefreshFolders])
 
   const handleDelete = async (id: string, type: 'file' | 'folder') => {
     if (!confirm('确定要删除吗？此操作不可恢复。')) return
     if (type === 'folder') {
-      await removeFolder(id)
+      await onRemoveFolder(id)
     } else {
       await removeFile(id)
     }
@@ -176,7 +178,7 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
                       onDownload={handleDownload}
                       onMove={(file) => setMoveFile(file)}
                       onRename={(id, name) => {
-                        if (item.type === 'folder') renameFolder(id, name)
+                        if (item.type === 'folder') onRenameFolder(id, name)
                         else renameFile(id, name)
                       }}
                       onDelete={(id) => handleDelete(id, item.type)}
@@ -190,11 +192,10 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
       </div>
 
       {/* Upload progress & error */}
-      {(uploadError || filesError || foldersError) && (
+      {(uploadError || filesError) && (
         <div className="px-3 sm:px-4 lg:px-6 pb-2 space-y-1">
           {uploadError && <p className="text-xs text-red-500 dark:text-red-400">上传: {uploadError}</p>}
           {filesError && <p className="text-xs text-red-500 dark:text-red-400">文件: {filesError}</p>}
-          {foldersError && <p className="text-xs text-red-500 dark:text-red-400">文件夹: {foldersError}</p>}
         </div>
       )}
       {isUploading && (
