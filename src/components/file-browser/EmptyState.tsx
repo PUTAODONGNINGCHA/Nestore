@@ -13,7 +13,7 @@ export function EmptyState({ onUploadClick }: EmptyStateProps) {
       >
         <Upload className="w-8 h-8 text-[#6C63FF]" />
       </button>
-      <h3 className="text-base font-bold text-[#3D4852] dark:text-[#E8ECF1] font-display">此文件夹为空</h3>
+      <h3 className="text-base font-bold text-[#3D4852] dark:text-[#E8ECF1] font-display">还没有内容</h3>
       <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-1">
         点击上方图标或拖拽文件到此处上传
       </p>
