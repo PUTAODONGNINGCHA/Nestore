@@ -19,7 +19,7 @@ export function Breadcrumb({ crumbs, onNavigate }: BreadcrumbProps) {
           <ChevronRight className="w-3.5 h-3.5 text-[#635F69]" />
           <button
             onClick={() => onNavigate(crumb.id)}
-            className={`px-3 py-1.5 rounded-[16px] transition-all duration-200 font-bold ${
+            className={`px-3 py-1.5 rounded-[16px] transition-all duration-200 font-bold cursor-pointer ${
               i === crumbs.length - 1
                 ? 'text-[#7C3AED]'
                 : 'text-[#635F69] hover:text-[#7C3AED] hover:bg-[#7C3AED]/10'
