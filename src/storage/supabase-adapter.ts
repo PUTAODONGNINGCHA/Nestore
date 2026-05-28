@@ -138,7 +138,8 @@ export class SupabaseAdapter implements StorageAdapter {
     const fileId = crypto.randomUUID()
 
     const storageDir = folderId ?? 'root'
-    const storagePath = `${ownerId}/${storageDir}/${fileId}-${file.name}`
+    const safeName = file.name.replace(/[^\w.-]/g, '_')
+    const storagePath = `${ownerId}/${storageDir}/${fileId}-${safeName}`
 
     const { error: uploadError } = await this.client.storage
       .from(BUCKET)
