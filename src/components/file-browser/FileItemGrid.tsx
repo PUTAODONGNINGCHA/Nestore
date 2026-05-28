@@ -8,8 +8,6 @@ import {
   File,
   FolderIcon,
   Download,
-  Trash2,
-  Move,
   MoreVertical,
 } from 'lucide-react'
 import { ContextMenu, ContextMenuItem } from '@/components/ui/ContextMenu'
@@ -162,40 +160,21 @@ export function FileItemCard({ item, type, onNavigate, onPreview, onDownload, on
           </div>
         )}
 
-        {/* Action buttons — always visible on mobile, hover reveal on desktop */}
-        <div className="flex items-center justify-center gap-1.5 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200 mt-0.5">
-          {isFile && onMove && (
-            <button
-              onClick={(e) => { e.stopPropagation(); onMove(fileItem) }}
-              className="w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] active:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] transition-all duration-200"
-              title="移动"
-            >
-              <Move className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
-            </button>
-          )}
+        {/* Action buttons — Download + More on mobile, all on hover on desktop */}
+        <div className="flex items-center justify-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200 mt-0.5">
           {isFile && onDownload && (
             <button
               onClick={(e) => { e.stopPropagation(); onDownload(fileItem) }}
-              className="w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] active:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] transition-all duration-200"
+              className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] active:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] transition-all duration-200"
               title="下载"
             >
               <Download className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
             </button>
           )}
-          {onDelete && (
-            <button
-              onClick={(e) => { e.stopPropagation(); onDelete(item.id) }}
-              className="w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-red-500 hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] active:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] transition-all duration-200"
-              title="删除"
-            >
-              <Trash2 className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
-            </button>
-          )}
-          {/* More button — opens context menu */}
           <button
             ref={moreRef}
             onClick={handleOpenMenu}
-            className="w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] active:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] transition-all duration-200"
+            className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] active:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] transition-all duration-200"
             title="更多"
           >
             <MoreVertical className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
