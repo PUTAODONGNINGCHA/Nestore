@@ -9,7 +9,6 @@ import {
   FolderIcon,
   Download,
   MoreVertical,
-  GripVertical,
 } from 'lucide-react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -139,7 +138,9 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
       <div
         ref={setNodeRef}
         style={style}
-        className="group relative bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.15),-8px_-8px_16px_rgba(255,255,255,0.7)] hover:-translate-y-1 hover:shadow-[18px_18px_36px_rgba(160,150,180,0.2),-12px_-12px_24px_rgba(255,255,255,0.85)] active:scale-[0.92] active:shadow-[inset_8px_8px_16px_#d9d4e3,inset_-8px_-8px_16px_#ffffff] cursor-pointer transition-transform duration-200 clay-bounce flex flex-col items-center py-3 sm:py-4 px-3 sm:px-4"
+        {...attributes}
+        {...listeners}
+        className="group relative bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.15),-8px_-8px_16px_rgba(255,255,255,0.7)] hover:-translate-y-1 hover:shadow-[18px_18px_36px_rgba(160,150,180,0.2),-12px_-12px_24px_rgba(255,255,255,0.85)] active:scale-[0.92] active:shadow-[inset_8px_8px_16px_#d9d4e3,inset_-8px_-8px_16px_#ffffff] cursor-pointer transition-transform duration-200 clay-bounce flex flex-col items-center py-3 sm:py-4 px-3 sm:px-4 touch-none"
         onContextMenu={handleContextMenu}
         onClick={handleClick}
       >
@@ -200,15 +201,6 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
               <Download className="w-4 h-4" />
             </button>
           )}
-          <button
-            {...attributes}
-            {...listeners}
-            onClick={(e) => e.stopPropagation()}
-            className="w-9 h-9 flex items-center justify-center rounded-[16px] bg-white text-[#635F69] shadow-[4px_4px_8px_rgba(160,150,180,0.15),-4px_-4px_8px_rgba(255,255,255,0.8)] hover:text-[#7C3AED] hover:shadow-[6px_6px_12px_rgba(160,150,180,0.2),-6px_-6px_12px_rgba(255,255,255,0.9)] active:scale-[0.92] transition-all duration-200 cursor-grab active:cursor-grabbing"
-            title="拖拽排序"
-          >
-            <GripVertical className="w-4 h-4" />
-          </button>
         </div>
       </div>
 

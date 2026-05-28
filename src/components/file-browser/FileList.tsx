@@ -63,18 +63,31 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
     const { active, over } = event
     if (!over || active.id === over.id) return
 
+    const activeId = String(active.id)
+    const overId = String(over.id)
+    const activeType = activeId.startsWith('folder-') ? 'folder' : 'file'
+    const overType = overId.startsWith('folder-') ? 'folder' : 'file'
+    const activeDataId = activeId.slice(activeId.indexOf('-') + 1)
+    const overDataId = overId.slice(overId.indexOf('-') + 1)
+
+    // File dropped on folder → move into folder
+    if (activeType === 'file' && overType === 'folder') {
+      await getStorageAdapter().moveFile(activeDataId, overDataId)
+      refreshFiles()
+      return
+    }
+
+    // Reorder
     const oldIndex = orderedItems.findIndex((item) => getSortId(item) === active.id)
     const newIndex = orderedItems.findIndex((item) => getSortId(item) === over.id)
     if (oldIndex === -1 || newIndex === -1) return
 
-    // Reorder locally
     const reordered = [...orderedItems]
     const [moved] = reordered.splice(oldIndex, 1)
     if (!moved) return
     reordered.splice(newIndex, 0, moved)
     setOrderedItems(reordered)
 
-    // Persist new sort_order to DB
     const updates = reordered.map((item, i) => ({
       id: item.data.id,
       sort_order: i,
@@ -83,7 +96,6 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
     try {
       await getStorageAdapter().updateSortOrder(updates)
     } catch {
-      // Refresh from server on failure
       refreshFiles()
       onRefreshFolders()
     }
