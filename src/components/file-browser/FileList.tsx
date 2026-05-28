@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   DndContext,
   PointerSensor,
@@ -27,6 +27,7 @@ interface FileListProps {
   onRenameFolder: (id: string, name: string) => Promise<void>
   onRemoveFolder: (id: string) => Promise<void>
   onRefreshFolders: () => Promise<void>
+  uploadInputRef: { current: HTMLInputElement | null }
 }
 
 type Entry = { type: 'folder'; data: import('@/types').Folder } | { type: 'file'; data: FileItem }
@@ -35,8 +36,7 @@ function getSortId(entry: Entry) {
   return entry.type === 'folder' ? `folder-${entry.data.id}` : `file-${entry.data.id}`
 }
 
-export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder, onRemoveFolder, onRefreshFolders }: FileListProps) {
-  const uploadInputRef = useRef<HTMLInputElement>(null)
+export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder, onRemoveFolder, onRefreshFolders, uploadInputRef }: FileListProps) {
   const { files, isLoading: filesLoading, error: filesError, refresh: refreshFiles, rename: renameFile, remove: removeFile } = useFiles(currentFolderId)
   const { crumbs } = useBreadcrumbs(currentFolderId)
   const { isUploading, progress, error: uploadError, uploadMultiple } = useUpload(currentFolderId, () => { refreshFiles(); onRefreshFolders() })
