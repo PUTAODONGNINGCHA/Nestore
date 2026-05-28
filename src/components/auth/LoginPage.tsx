@@ -48,6 +48,10 @@ export function LoginPage({ onLogin, error, isLoading }: LoginPageProps) {
           <Button type="submit" className="w-full" size="lg" disabled={isLoading || !password.trim()}>
             {isLoading ? '验证中...' : '进入云盘'}
           </Button>
+
+          <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
+            关闭浏览器标签页后自动退出登录
+          </p>
         </form>
       </div>
     </div>
