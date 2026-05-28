@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
+/* Disable dark mode — neumorphism uses consistent light theme on all devices */
+@custom-variant dark (&:where(.never-match-dark));
+
 @theme {
   --color-neumo-*: initial;
   --color-neumo-bg: #E0E5EC;
-  --color-neumo-bg-dark: #1a1d23;
   --color-neumo-fg: #3D4852;
-  --color-neumo-fg-dark: #E8ECF1;
   --color-neumo-muted: #6B7280;
-  --color-neumo-muted-dark: #9CA3AF;
   --color-neumo-accent: #6C63FF;
   --color-neumo-accent-light: #8B84FF;
   --color-neumo-accent-secondary: #38B2AC;
@@ -21,8 +21,6 @@
   --shadow-inset: inset 6px 6px 10px rgb(163 177 198 / 0.6), inset -6px -6px 10px rgb(255 255 255 / 0.5);
   --shadow-inset-deep: inset 10px 10px 20px rgb(163 177 198 / 0.7), inset -10px -10px 20px rgb(255 255 255 / 0.6);
   --shadow-inset-small: inset 3px 3px 6px rgb(163 177 198 / 0.6), inset -3px -3px 6px rgb(255 255 255 / 0.5);
-  --shadow-extruded-dark: 9px 9px 16px rgb(0 0 0 / 0.4), -9px -9px 16px rgb(255 255 255 / 0.05);
-  --shadow-inset-dark: inset 6px 6px 10px rgb(0 0 0 / 0.4), inset -6px -6px 10px rgb(255 255 255 / 0.05);
 
   --radius-container: 32px;
   --radius-base: 16px;
@@ -53,13 +51,7 @@ body {
   scroll-behavior: smooth;
 }
 
-.dark body,
-body.dark {
-  background-color: var(--color-neumo-bg-dark);
-  color: var(--color-neumo-fg-dark);
-}
-
-/* Spinner re-styled for neumorphic look */
+/* Spinner */
 @keyframes neumo-spin {
   to { transform: rotate(360deg); }
 }
