@@ -182,13 +182,13 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
           </div>
         )}
 
-        {/* Action buttons — bottom-right, visible on hover */}
-        <div className="flex items-center justify-end gap-1 w-full sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 mt-auto pt-1">
+        {/* Action buttons — centered below name, visible on hover */}
+        <div className="flex items-center justify-center gap-1 w-full sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 mt-auto pt-1">
           <button
             {...attributes}
             {...listeners}
             onClick={(e) => e.stopPropagation()}
-            className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-[16px] text-[#635F69] hover:text-[#7C3AED] hover:bg-white/50 active:bg-white/70 active:shadow-[inset_4px_4px_8px_#d9d4e3,inset_-4px_-4px_8px_#ffffff] transition-all duration-200 cursor-grab active:cursor-grabbing mr-auto"
+            className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-[16px] text-[#635F69] hover:text-[#7C3AED] hover:bg-white/50 active:bg-white/70 active:shadow-[inset_4px_4px_8px_#d9d4e3,inset_-4px_-4px_8px_#ffffff] transition-all duration-200 cursor-grab active:cursor-grabbing"
             title="拖拽排序"
           >
             <GripVertical className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
