@@ -62,7 +62,6 @@ export class SupabaseAdapter implements StorageAdapter {
       .from('folders')
       .select('*')
       .eq('owner_id', ownerId)
-      .order('sort_order')
       .order('name')
 
     if (parentId === null) {
@@ -82,7 +81,6 @@ export class SupabaseAdapter implements StorageAdapter {
       .from('folders')
       .select('*')
       .eq('owner_id', ownerId)
-      .order('sort_order')
       .order('name')
     if (error) throw new Error(`Failed to fetch all folders: ${error.message}`)
     return data as Folder[]
@@ -122,7 +120,6 @@ export class SupabaseAdapter implements StorageAdapter {
       .from('files')
       .select('*')
       .eq('owner_id', ownerId)
-      .order('sort_order')
       .order('name')
 
     if (folderId === null) {
@@ -234,7 +231,11 @@ export class SupabaseAdapter implements StorageAdapter {
         .from(table(item.type))
         .update({ sort_order: item.sort_order, updated_at: new Date().toISOString() })
         .eq('id', item.id)
-      if (error) throw new Error(`Failed to update sort order: ${error.message}`)
+      if (error) {
+        // sort_order column may not exist yet — ignore
+        if (error.message?.includes('sort_order')) continue
+        throw new Error(`Failed to update sort order: ${error.message}`)
+      }
     }
   }
 
