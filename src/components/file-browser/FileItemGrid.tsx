@@ -182,8 +182,8 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
           </div>
         )}
 
-        {/* Action buttons — centered row: ≡ ↓ ⋮ */}
-        <div className="flex items-center justify-center gap-1 w-full sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 mt-auto pt-0.5">
+        {/* Action buttons — ≡ centered under name, ↓ and ⋮ to the right */}
+        <div className="flex items-center justify-center gap-1 w-full sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 mt-auto pt-0.5 pl-7">
           <button
             {...attributes}
             {...listeners}
