@@ -29,7 +29,7 @@ export default function App() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#E0E5EC] dark:bg-[#1a1d23] flex items-center justify-center">
-        <div className="neumo-spinner !w-8 !h-8 !border-[3px]" />
+        <div className="clay-spinner !w-8 !h-8 !border-[3px]" />
       </div>
     )
   }
@@ -47,7 +47,7 @@ export default function App() {
           <div className="relative">
             <button
               onClick={() => setShowNewFolderInput(!showNewFolderInput)}
-              className="w-10 h-10 flex items-center justify-center rounded-2xl bg-[#E0E5EC] dark:bg-[#1a1d23] text-[#3D4852] dark:text-[#E8ECF1] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgb(0_0_0_/_0.4),-9px_-9px_16px_rgba(255,255,255,0.05)] hover:shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)] active:shadow-[inset_6px_6px_10px_rgb(163_177_198_/_0.6),inset_-6px_-6px_10px_rgba(255,255,255,0.5)] dark:active:shadow-[inset_6px_6px_10px_rgb(0_0_0_/_0.4),inset_-6px_-6px_10px_rgba(255,255,255,0.05)] transition-all duration-200"
+              className="w-10 h-10 flex items-center justify-center rounded-[20px] bg-white text-[#635F69] shadow-[8px_8px_16px_rgba(160,150,180,0.15),-4px_-4px_12px_rgba(255,255,255,0.8)] hover:-translate-y-0.5 hover:shadow-[12px_12px_24px_rgba(160,150,180,0.2),-6px_-6px_16px_rgba(255,255,255,0.9)] active:scale-[0.92] active:shadow-[inset_6px_6px_12px_#d9d4e3,inset_-6px_-6px_12px_#ffffff] transition-all duration-200"
               title="新建文件夹"
             >
               <FolderPlus className="w-5 h-5" />
@@ -59,7 +59,7 @@ export default function App() {
                   value={newFolderName}
                   onChange={(e) => setNewFolderName(e.target.value)}
                   placeholder="文件夹名称"
-                  className="px-4 py-2.5 text-sm rounded-[16px] bg-[#E0E5EC] dark:bg-[#1a1d23] text-[#3D4852] dark:text-[#E8ECF1] placeholder-[#A0AEC0] dark:placeholder-[#6B7280] shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)] focus:outline-none focus:ring-2 focus:ring-[#6C63FF] focus:ring-offset-2 focus:ring-offset-[#E0E5EC] dark:focus:ring-offset-[#1a1d23] w-48 transition-all duration-200"
+                  className="px-5 py-3 text-sm rounded-[20px] bg-[#EFEBF5] text-[#332F3A] placeholder-[#635F69]/50 shadow-[inset_6px_6px_12px_#d9d4e3,inset_-6px_-6px_12px_#ffffff] focus:outline-none focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 w-48 transition-all duration-200"
                   autoFocus
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') handleCreateFolder()

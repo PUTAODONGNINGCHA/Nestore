@@ -139,7 +139,7 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
       <div
         ref={setNodeRef}
         style={style}
-        className="group relative bg-[#E0E5EC] dark:bg-[#1a1d23] rounded-[32px] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgb(0_0_0_/_0.4),-9px_-9px_16px_rgba(255,255,255,0.05)] hover:shadow-[12px_12px_20px_rgb(163_177_198_/_0.7),-12px_-12px_20px_rgba(255,255,255,0.6)] dark:hover:shadow-[12px_12px_20px_rgb(0_0_0_/_0.5),-12px_-12px_20px_rgba(255,255,255,0.05)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_6px_6px_10px_rgb(163_177_198_/_0.6),inset_-6px_-6px_10px_rgba(255,255,255,0.5)] dark:active:shadow-[inset_6px_6px_10px_rgb(0_0_0_/_0.4),inset_-6px_-6px_10px_rgba(255,255,255,0.05)] cursor-pointer transition-all duration-300 p-3 sm:p-4 flex flex-col items-center gap-2"
+        className="group relative bg-white/70 backdrop-blur-xl rounded-[32px] shadow-[16px_16px_32px_rgba(160,150,180,0.2),-10px_-10px_24px_rgba(255,255,255,0.9),inset_6px_6px_12px_rgba(139,92,246,0.03),inset_-6px_-6px_12px_rgba(255,255,255,1)] hover:-translate-y-2 hover:shadow-[24px_24px_48px_rgba(160,150,180,0.25),-14px_-14px_32px_rgba(255,255,255,0.95),inset_6px_6px_12px_rgba(139,92,246,0.03),inset_-6px_-6px_12px_rgba(255,255,255,1)] active:scale-[0.97] active:shadow-[inset_10px_10px_20px_#d9d4e3,inset_-10px_-10px_20px_#ffffff] cursor-pointer transition-all duration-300 p-3 sm:p-4 flex flex-col items-center gap-2"
         onContextMenu={handleContextMenu}
         onClick={handleClick}
       >
@@ -148,7 +148,7 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
           {...attributes}
           {...listeners}
           onClick={(e) => e.stopPropagation()}
-          className="absolute top-2 left-2 w-7 h-7 flex items-center justify-center rounded-full text-[#6B7280] hover:text-[#6C63FF] hover:bg-[#E0E5EC] dark:hover:bg-[#1a1d23] opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-grab active:cursor-grabbing z-10"
+          className="absolute top-2 left-2 w-7 h-7 flex items-center justify-center rounded-full text-[#635F69] hover:text-[#7C3AED] bg-white/80 opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-grab active:cursor-grabbing z-10 shadow-[4px_4px_8px_rgba(160,150,180,0.15),-4px_-4px_8px_rgba(255,255,255,0.8)]"
           title="拖拽排序"
         >
           <GripVertical className="w-4 h-4" />
@@ -156,12 +156,12 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
         {/* Icon / Thumbnail area */}
         <div className="relative w-full aspect-square max-w-[88px] sm:max-w-20 shrink-0">
           {isImage ? (
-            <div className="w-full h-full rounded-2xl overflow-hidden shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)]">
+            <div className="w-full h-full rounded-2xl overflow-hidden shadow-[inset_6px_6px_12px_#d9d4e3,inset_-6px_-6px_12px_#ffffff]">
               <Thumbnail file={fileItem} />
             </div>
           ) : (
-            <div className="w-full h-full rounded-2xl bg-[#E0E5EC] dark:bg-[#1a1d23] shadow-[inset_6px_6px_10px_rgb(163_177_198_/_0.6),inset_-6px_-6px_10px_rgba(255,255,255,0.5)] dark:shadow-[inset_6px_6px_10px_rgb(0_0_0_/_0.4),inset_-6px_-6px_10px_rgba(255,255,255,0.05)] flex items-center justify-center">
-              <Icon className={`w-10 h-10 sm:w-10 sm:h-10 ${type === 'folder' ? 'text-[#38B2AC]' : 'text-[#6C63FF]'}`} />
+            <div className="w-full h-full rounded-2xl bg-gradient-to-br from-[#F0EDF7] to-[#F4F1FA] shadow-[inset_6px_6px_12px_#d9d4e3,inset_-6px_-6px_12px_#ffffff] flex items-center justify-center">
+              <Icon className={`w-10 h-10 sm:w-10 sm:h-10 ${type === 'folder' ? 'text-[#10B981]' : 'text-[#7C3AED]'}`} />
             </div>
           )}
         </div>
@@ -178,14 +178,14 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
               if (e.key === 'Enter') submitRename()
               if (e.key === 'Escape') setIsRenaming(false)
             }}
-            className="w-full px-2 py-1 text-xs text-center rounded-xl bg-[#E0E5EC] dark:bg-[#1a1d23] text-[#3D4852] dark:text-[#E8ECF1] shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)] focus:outline-none focus:ring-2 focus:ring-[#6C63FF]"
+            className="w-full px-2 py-1 text-xs text-center rounded-[16px] bg-[#EFEBF5] text-[#332F3A] shadow-[inset_6px_6px_12px_#d9d4e3,inset_-6px_-6px_12px_#ffffff] focus:outline-none focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20"
             onClick={(e) => e.stopPropagation()}
           />
         ) : (
           <div className="w-full text-center min-w-0">
-            <p className="text-xs sm:text-xs font-medium text-[#3D4852] dark:text-[#E8ECF1] truncate leading-tight">{item.name}</p>
+            <p className="text-xs sm:text-xs font-bold text-[#332F3A] truncate leading-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{item.name}</p>
             {isFile && (
-              <p className="text-[10px] sm:text-[10px] text-[#6B7280] dark:text-[#9CA3AF] mt-0.5">
+              <p className="text-[10px] sm:text-[10px] text-[#635F69] mt-0.5">
                 {formatFileSize(fileItem.size)}
               </p>
             )}
@@ -197,7 +197,7 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
           {isFile && onDownload && (
             <button
               onClick={(e) => { e.stopPropagation(); onDownload(fileItem) }}
-              className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] active:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] transition-all duration-200"
+              className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-[16px] text-[#635F69] hover:text-[#7C3AED] hover:bg-white/50 active:bg-white/70 active:shadow-[inset_4px_4px_8px_#d9d4e3,inset_-4px_-4px_8px_#ffffff] transition-all duration-200"
               title="下载"
             >
               <Download className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
@@ -206,7 +206,7 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
           <button
             ref={moreRef}
             onClick={handleOpenMenu}
-            className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] active:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] transition-all duration-200"
+            className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-[16px] text-[#635F69] hover:text-[#7C3AED] hover:bg-white/50 active:bg-white/70 active:shadow-[inset_4px_4px_8px_#d9d4e3,inset_-4px_-4px_8px_#ffffff] transition-all duration-200"
             title="更多"
           >
             <MoreVertical className="w-4 h-4 sm:w-3.5 sm:h-3.5" />

@@ -47,7 +47,7 @@ export function ContextMenu({ isOpen, onClose, position, children }: ContextMenu
   return (
     <div
       ref={ref}
-      className="fixed z-50 bg-[#E0E5EC] dark:bg-[#1a1d23] rounded-[16px] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgb(0_0_0_/_0.4),-9px_-9px_16px_rgba(255,255,255,0.05)] py-1 min-w-[160px]"
+      className="fixed z-50 bg-white/80 backdrop-blur-xl rounded-[24px] shadow-[16px_16px_32px_rgba(160,150,180,0.25),-10px_-10px_24px_rgba(255,255,255,0.9),inset_6px_6px_12px_rgba(139,92,246,0.03),inset_-6px_-6px_12px_rgba(255,255,255,1)] py-1.5 min-w-[170px]"
       style={{ left: adjustedPos.x, top: adjustedPos.y }}
     >
       {children}
@@ -58,10 +58,10 @@ export function ContextMenu({ isOpen, onClose, position, children }: ContextMenu
 export function ContextMenuItem({ children, onClick, danger }: { children: ReactNode; onClick: () => void; danger?: boolean }) {
   return (
     <button
-      className={`w-full text-left px-4 py-2.5 text-sm transition-all duration-200 ${
+      className={`w-full text-left px-4 py-2.5 text-sm transition-all duration-200 font-bold ${
         danger
-          ? 'text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20'
-          : 'text-[#3D4852] dark:text-[#E8ECF1] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)]'
+          ? 'text-red-500 hover:bg-red-50'
+          : 'text-[#332F3A] hover:bg-[#7C3AED]/10 hover:text-[#7C3AED]'
       }`}
       onClick={onClick}
     >

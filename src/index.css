@@ -1,66 +1,125 @@
 @import "tailwindcss";
 
-/* Disable dark mode — neumorphism uses consistent light theme on all devices */
+/* Disable dark mode — claymorphism uses consistent light theme */
 @custom-variant dark (&:where(.never-match-dark));
 
 @theme {
-  --color-neumo-*: initial;
-  --color-neumo-bg: #E0E5EC;
-  --color-neumo-fg: #3D4852;
-  --color-neumo-muted: #6B7280;
-  --color-neumo-accent: #6C63FF;
-  --color-neumo-accent-light: #8B84FF;
-  --color-neumo-accent-secondary: #38B2AC;
+  /* Claymorphism Color Palette */
+  --color-clay-*: initial;
+  --color-clay-canvas: #F4F1FA;
+  --color-clay-foreground: #332F3A;
+  --color-clay-muted: #635F69;
+  --color-clay-accent: #7C3AED;
+  --color-clay-accent-light: #A78BFA;
+  --color-clay-accent-alt: #DB2777;
+  --color-clay-accent-blue: #0EA5E9;
+  --color-clay-accent-green: #10B981;
+  --color-clay-accent-amber: #F59E0B;
+  --color-clay-cardBg: rgba(255, 255, 255, 0.65);
+  --color-clay-cardBg-solid: #FFFFFF;
 
-  --font-display: "Plus Jakarta Sans", sans-serif;
+  /* Fonts */
+  --font-display: "Nunito", sans-serif;
   --font-body: "DM Sans", sans-serif;
 
-  --shadow-extruded: 9px 9px 16px rgb(163 177 198 / 0.6), -9px -9px 16px rgb(255 255 255 / 0.5);
-  --shadow-extruded-hover: 12px 12px 20px rgb(163 177 198 / 0.7), -12px -12px 20px rgb(255 255 255 / 0.6);
-  --shadow-extruded-small: 5px 5px 10px rgb(163 177 198 / 0.6), -5px -5px 10px rgb(255 255 255 / 0.5);
-  --shadow-inset: inset 6px 6px 10px rgb(163 177 198 / 0.6), inset -6px -6px 10px rgb(255 255 255 / 0.5);
-  --shadow-inset-deep: inset 10px 10px 20px rgb(163 177 198 / 0.7), inset -10px -10px 20px rgb(255 255 255 / 0.6);
-  --shadow-inset-small: inset 3px 3px 6px rgb(163 177 198 / 0.6), inset -3px -3px 6px rgb(255 255 255 / 0.5);
+  /* Claymorphism 4-Layer Shadow System */
 
-  --radius-container: 32px;
-  --radius-base: 16px;
+  /* Deep Clay (Surface) — for large containers */
+  --shadow-clay-surface: 30px 30px 60px #cdc6d9, -30px -30px 60px #ffffff,
+    inset 10px 10px 20px rgba(139, 92, 246, 0.05),
+    inset -10px -10px 20px rgba(255, 255, 255, 0.8);
+
+  /* Clay Card (Floating) — for cards */
+  --shadow-clay-card: 16px 16px 32px rgba(160, 150, 180, 0.2),
+    -10px -10px 24px rgba(255, 255, 255, 0.9),
+    inset 6px 6px 12px rgba(139, 92, 246, 0.03),
+    inset -6px -6px 12px rgba(255, 255, 255, 1);
+
+  /* Clay Card Hover — lifted state */
+  --shadow-clay-card-hover: 24px 24px 48px rgba(160, 150, 180, 0.25),
+    -14px -14px 32px rgba(255, 255, 255, 0.95),
+    inset 6px 6px 12px rgba(139, 92, 246, 0.03),
+    inset -6px -6px 12px rgba(255, 255, 255, 1);
+
+  /* Clay Button (High Convexity) */
+  --shadow-clay-button: 12px 12px 24px rgba(139, 92, 246, 0.3),
+    -8px -8px 16px rgba(255, 255, 255, 0.4),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.4),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.1);
+
+  /* Clay Button Hover */
+  --shadow-clay-button-hover: 16px 16px 32px rgba(139, 92, 246, 0.35),
+    -10px -10px 20px rgba(255, 255, 255, 0.5);
+
+  /* Clay Pressed (Recessed) — for inputs and active states */
+  --shadow-clay-pressed: inset 10px 10px 20px #d9d4e3,
+    inset -10px -10px 20px #ffffff;
+
+  /* Clay Pressed Small */
+  --shadow-clay-pressed-sm: inset 6px 6px 12px #d9d4e3,
+    inset -6px -6px 12px #ffffff;
+
+  /* Radii */
+  --radius-container: 48px;
+  --radius-card: 32px;
+  --radius-medium: 24px;
+  --radius-base: 20px;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+/* Animations */
+@keyframes clay-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(2deg); }
+}
+
+@keyframes clay-float-delayed {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(-2deg); }
+}
+
+@keyframes clay-float-slow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-30px) rotate(5deg); }
+}
+
+@keyframes clay-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes clay-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @utility scrollbar-thin {
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb {
-    background: rgb(163 177 198 / 0.4);
+    background: rgba(160, 150, 180, 0.3);
     border-radius: 3px;
   }
 }
 
-body {
-  background-color: var(--color-neumo-bg);
-  font-family: var(--font-body);
-  color: var(--color-neumo-fg);
-  scroll-behavior: smooth;
-}
-
-/* Spinner */
-@keyframes neumo-spin {
-  to { transform: rotate(360deg); }
-}
-
-.neumo-spinner {
+@utility clay-spinner {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 3px solid rgb(163 177 198 / 0.3);
-  border-top-color: var(--color-neumo-accent);
-  animation: neumo-spin 0.8s linear infinite;
+  border: 3px solid rgba(160, 150, 180, 0.25);
+  border-top-color: var(--color-clay-accent);
+  animation: clay-spin 0.8s linear infinite;
+}
+
+/* Body base */
+body {
+  background-color: var(--color-clay-canvas);
+  font-family: var(--font-body);
+  color: var(--color-clay-foreground);
 }

@@ -37,7 +37,7 @@ export function MoveFileDialog({ isOpen, onClose, onMove }: MoveFileDialogProps)
       <div className="space-y-4">
         {isLoading ? (
           <div className="flex justify-center py-8">
-            <div className="neumo-spinner" />
+            <div className="clay-spinner" />
           </div>
         ) : (
           <div className="max-h-60 overflow-y-auto space-y-1 scrollbar-thin">

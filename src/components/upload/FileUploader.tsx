@@ -40,10 +40,10 @@ export function FileUploader({ onDrop }: FileUploaderProps) {
         className="relative cursor-pointer"
       >
         {isDragActive && (
-          <div className="absolute inset-0 z-30 flex items-center justify-center bg-[#E0E5EC]/80 dark:bg-[#1a1d23]/80 backdrop-blur-sm rounded-[32px] shadow-[inset_10px_10px_20px_rgb(163_177_198_/_0.7),inset_-10px_-10px_20px_rgba(255,255,255,0.6)] dark:shadow-[inset_10px_10px_20px_rgb(0_0_0_/_0.5),inset_-10px_-10px_20px_rgba(255,255,255,0.05)] m-3">
-            <div className="flex flex-col items-center gap-2 text-[#6C63FF]">
+          <div className="absolute inset-0 z-30 flex items-center justify-center bg-white/80 backdrop-blur-xl rounded-[32px] shadow-[inset_10px_10px_20px_#d9d4e3,inset_-10px_-10px_20px_#ffffff] m-3">
+            <div className="flex flex-col items-center gap-2 text-[#7C3AED]">
               <Upload className="w-10 h-10" />
-              <p className="text-lg font-bold font-display">释放以上传文件</p>
+              <p className="text-lg font-extrabold font-display tracking-tight">释放以上传文件</p>
             </div>
           </div>
         )}

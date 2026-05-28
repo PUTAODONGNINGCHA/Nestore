@@ -17,29 +17,26 @@ export function LoginPage({ onLogin, error, isLoading }: LoginPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#E0E5EC] dark:bg-[#1a1d23] flex items-center justify-center p-4">
-      {/* Decorative background elements */}
+    <div className="min-h-screen bg-[#F4F1FA] flex items-center justify-center p-4">
+      {/* Animated background blobs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-[#E0E5EC] dark:bg-[#1a1d23] shadow-[20px_20px_40px_rgb(163_177_198_/_0.6),-20px_-20px_40px_rgba(255,255,255,0.5)] dark:shadow-[20px_20px_40px_rgb(0_0_0_/_0.4),-20px_-20px_40px_rgba(255,255,255,0.05)]" />
-        <div className="absolute -bottom-16 -left-16 w-80 h-80 rounded-full bg-[#E0E5EC] dark:bg-[#1a1d23] shadow-[inset_15px_15px_30px_rgb(163_177_198_/_0.6),inset_-15px_-15px_30px_rgba(255,255,255,0.5)] dark:shadow-[inset_15px_15px_30px_rgb(0_0_0_/_0.4),inset_-15px_-15px_30px_rgba(255,255,255,0.05)]" />
+        <div className="absolute h-[60vh] w-[60vh] rounded-full bg-[#8B5CF6]/15 blur-3xl -top-[10%] -right-[10%] animate-[clay-float_8s_ease-in-out_infinite]" />
+        <div className="absolute h-[50vh] w-[50vh] rounded-full bg-[#EC4899]/10 blur-3xl -bottom-[10%] -left-[10%] animate-[clay-float-delayed_10s_ease-in-out_infinite]" />
       </div>
 
       <div className="w-full max-w-sm relative">
         <div className="text-center mb-8">
-          {/* Icon well — inset deep */}
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-[32px] bg-[#E0E5EC] dark:bg-[#1a1d23] shadow-[inset_10px_10px_20px_rgb(163_177_198_/_0.7),inset_-10px_-10px_20px_rgba(255,255,255,0.6)] dark:shadow-[inset_10px_10px_20px_rgb(0_0_0_/_0.5),inset_-10px_-10px_20px_rgba(255,255,255,0.05)] mb-6">
-            {/* Extruded inner circle */}
-            <div className="w-12 h-12 rounded-full bg-[#E0E5EC] dark:bg-[#1a1d23] shadow-[5px_5px_10px_rgb(163_177_198_/_0.6),-5px_-5px_10px_rgba(255,255,255,0.5)] dark:shadow-[5px_5px_10px_rgb(0_0_0_/_0.4),-5px_-5px_10px_rgba(255,255,255,0.05)] flex items-center justify-center">
-              <svg className="w-6 h-6 text-[#6C63FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-              </svg>
-            </div>
+          {/* Icon — gradient clay orb */}
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-[32px] bg-gradient-to-br from-[#A78BFA] to-[#7C3AED] shadow-[12px_12px_24px_rgba(139,92,246,0.3),-8px_-8px_16px_rgba(255,255,255,0.4),inset_4px_4px_8px_rgba(255,255,255,0.4),inset_-4px_-4px_8px_rgba(0,0,0,0.1)] mb-6">
+            <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+            </svg>
           </div>
-          <h1 className="text-2xl font-extrabold text-[#3D4852] dark:text-[#E8ECF1] font-display tracking-tight">个人云盘</h1>
-          <p className="text-[#6B7280] dark:text-[#9CA3AF] mt-2 text-sm">输入密码进入共享空间</p>
+          <h1 className="text-3xl font-extrabold text-[#332F3A] font-display tracking-tight">个人云盘</h1>
+          <p className="text-[#635F69] mt-2 text-sm font-medium">输入密码进入共享空间</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-[#E0E5EC] dark:bg-[#1a1d23] rounded-[32px] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgb(0_0_0_/_0.4),-9px_-9px_16px_rgba(255,255,255,0.05)] p-8 space-y-5">
+        <form onSubmit={handleSubmit} className="bg-white/70 backdrop-blur-xl rounded-[32px] shadow-[16px_16px_32px_rgba(160,150,180,0.2),-10px_-10px_24px_rgba(255,255,255,0.9),inset_6px_6px_12px_rgba(139,92,246,0.03),inset_-6px_-6px_12px_rgba(255,255,255,1)] p-8 space-y-5">
           <div>
             <input
               type="password"
@@ -47,19 +44,19 @@ export function LoginPage({ onLogin, error, isLoading }: LoginPageProps) {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="请输入共享密码"
               autoFocus
-              className="w-full px-5 py-3.5 rounded-[16px] bg-[#E0E5EC] dark:bg-[#1a1d23] text-[#3D4852] dark:text-[#E8ECF1] placeholder-[#A0AEC0] dark:placeholder-[#6B7280] shadow-[inset_6px_6px_10px_rgb(163_177_198_/_0.6),inset_-6px_-6px_10px_rgba(255,255,255,0.5)] dark:shadow-[inset_6px_6px_10px_rgb(0_0_0_/_0.4),inset_-6px_-6px_10px_rgba(255,255,255,0.05)] focus:outline-none focus:shadow-[inset_10px_10px_20px_rgb(163_177_198_/_0.7),inset_-10px_-10px_20px_rgba(255,255,255,0.6)] dark:focus:shadow-[inset_10px_10px_20px_rgb(0_0_0_/_0.5),inset_-10px_-10px_20px_rgba(255,255,255,0.05)] focus:ring-2 focus:ring-[#6C63FF] focus:ring-offset-2 focus:ring-offset-[#E0E5EC] dark:focus:ring-offset-[#1a1d23] transition-all duration-300"
+              className="w-full h-14 px-6 rounded-[20px] bg-[#EFEBF5] text-[#332F3A] placeholder-[#635F69]/50 shadow-[inset_6px_6px_12px_#d9d4e3,inset_-6px_-6px_12px_#ffffff] focus:outline-none focus:bg-white focus:ring-4 focus:ring-[#7C3AED]/20 focus:shadow-[inset_4px_4px_8px_#d9d4e3,inset_-4px_-4px_8px_#ffffff] transition-all duration-200"
             />
           </div>
 
           {error && (
-            <p className="text-sm text-red-500 dark:text-red-400 text-center font-medium">{error}</p>
+            <p className="text-sm text-red-500 text-center font-bold">{error}</p>
           )}
 
           <Button type="submit" className="w-full" size="lg" disabled={isLoading || !password.trim()}>
             {isLoading ? '验证中...' : '进入云盘'}
           </Button>
 
-          <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] text-center">
+          <p className="text-xs text-[#635F69] text-center font-medium">
             关闭浏览器标签页后自动退出登录
           </p>
         </form>

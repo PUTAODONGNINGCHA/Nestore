@@ -64,7 +64,7 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
     <Modal isOpen onClose={onClose} title={file.name}>
       {isLoading ? (
         <div className="flex items-center justify-center py-16">
-          <div className="neumo-spinner" />
+          <div className="clay-spinner" />
         </div>
       ) : error ? (
         <div className="text-center py-16">
