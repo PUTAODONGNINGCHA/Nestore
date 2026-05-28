@@ -20,8 +20,8 @@ export function LoginPage({ onLogin, error, isLoading }: LoginPageProps) {
     <div className="min-h-screen bg-[#F4F1FA] flex items-center justify-center p-4">
       {/* Animated background blobs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute h-[60vh] w-[60vh] rounded-full bg-[#8B5CF6]/15 blur-3xl -top-[10%] -right-[10%] animate-[clay-float_8s_ease-in-out_infinite]" />
-        <div className="absolute h-[50vh] w-[50vh] rounded-full bg-[#EC4899]/10 blur-3xl -bottom-[10%] -left-[10%] animate-[clay-float-delayed_10s_ease-in-out_infinite]" />
+        <div className="absolute h-[40vh] w-[40vh] rounded-full bg-[#8B5CF6]/10 blur-3xl -top-[10%] -right-[10%] animate-[clay-float_8s_ease-in-out_infinite] will-change-transform" />
+        <div className="absolute h-[35vh] w-[35vh] rounded-full bg-[#EC4899]/8 blur-3xl -bottom-[10%] -left-[10%] animate-[clay-float-delayed_10s_ease-in-out_infinite] will-change-transform" />
       </div>
 
       <div className="w-full max-w-sm relative">
@@ -36,7 +36,7 @@ export function LoginPage({ onLogin, error, isLoading }: LoginPageProps) {
           <p className="text-[#635F69] mt-2 text-sm font-medium">输入密码进入共享空间</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white/70 backdrop-blur-xl rounded-[32px] shadow-[16px_16px_32px_rgba(160,150,180,0.2),-10px_-10px_24px_rgba(255,255,255,0.9),inset_6px_6px_12px_rgba(139,92,246,0.03),inset_-6px_-6px_12px_rgba(255,255,255,1)] p-8 space-y-5">
+        <form onSubmit={handleSubmit} className="bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.15),-8px_-8px_16px_rgba(255,255,255,0.6)] p-8 space-y-5">
           <div>
             <input
               type="password"

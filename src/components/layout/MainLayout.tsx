@@ -12,12 +12,12 @@ export function MainLayout({ children, onLogout, headerRight }: MainLayoutProps)
     <div className="min-h-screen bg-[#F4F1FA] flex flex-col">
       {/* Animated background blobs */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10">
-        <div className="absolute h-[60vh] w-[60vh] rounded-full bg-[#8B5CF6]/10 blur-3xl -top-[10%] -left-[10%] animate-[clay-float_8s_ease-in-out_infinite]" />
-        <div className="absolute h-[50vh] w-[50vh] rounded-full bg-[#EC4899]/10 blur-3xl -right-[10%] top-[20%] animate-[clay-float-delayed_10s_ease-in-out_infinite]" />
-        <div className="absolute h-[40vh] w-[40vh] rounded-full bg-[#0EA5E9]/10 blur-3xl bottom-[10%] left-[30%] animate-[clay-float-slow_12s_ease-in-out_infinite] hidden lg:block" />
+        <div className="absolute h-[40vh] w-[40vh] rounded-full bg-[#8B5CF6]/8 blur-3xl -top-[10%] -left-[10%] animate-[clay-float_8s_ease-in-out_infinite] will-change-transform" />
+        <div className="absolute h-[35vh] w-[35vh] rounded-full bg-[#EC4899]/8 blur-3xl -right-[10%] top-[20%] animate-[clay-float-delayed_10s_ease-in-out_infinite] will-change-transform" />
+        <div className="absolute h-[30vh] w-[30vh] rounded-full bg-[#0EA5E9]/8 blur-3xl bottom-[10%] left-[30%] animate-[clay-float-slow_12s_ease-in-out_infinite] hidden lg:block will-change-transform" />
       </div>
 
-      <header className="bg-white/70 backdrop-blur-xl border-b border-white/20 px-4 lg:px-6 sticky top-0 z-40 shadow-[0_4px_20px_rgba(160,150,180,0.1)]">
+      <header className="bg-white px-4 lg:px-6 sticky top-0 z-40 shadow-[0_2px_12px_rgba(160,150,180,0.08)]">
         <div className="h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {/* Logo icon well with gradient */}

@@ -27,7 +27,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
       onClick={(e) => { if (e.target === overlayRef.current) onClose() }}
     >
       <div
-        className="w-full max-w-4xl max-h-[90vh] flex flex-col bg-white/80 backdrop-blur-xl rounded-[32px] shadow-[16px_16px_32px_rgba(160,150,180,0.25),-10px_-10px_24px_rgba(255,255,255,0.9),inset_6px_6px_12px_rgba(139,92,246,0.03),inset_-6px_-6px_12px_rgba(255,255,255,1)]"
+        className="w-full max-w-4xl max-h-[90vh] flex flex-col bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.15),-6px_-6px_16px_rgba(255,255,255,0.5)]"
       >
         {title && (
           <div className="flex items-center justify-between px-6 py-4 shrink-0">

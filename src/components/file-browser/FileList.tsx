@@ -149,7 +149,7 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
     <div className="flex-1 flex flex-col min-w-0">
       {/* Toolbar */}
       <div className="px-3 sm:px-4 lg:px-6 pt-3">
-        <div className="bg-white/70 backdrop-blur-xl rounded-[24px] px-4 py-2.5 shadow-[12px_12px_24px_rgba(160,150,180,0.12),-6px_-6px_16px_rgba(255,255,255,0.7)]">
+        <div className="bg-white rounded-[24px] px-4 py-2.5 shadow-[8px_8px_16px_rgba(160,150,180,0.1),-4px_-4px_12px_rgba(255,255,255,0.5)]">
           <div className="flex items-center">
             <div className="min-w-0 overflow-x-auto">
               <Breadcrumb crumbs={crumbs} onNavigate={onNavigate} />
@@ -183,7 +183,7 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
         ) : orderedItems.length === 0 ? (
           <EmptyState onUploadClick={() => uploadInputRef.current?.click()} />
         ) : (
-          <div className="bg-white/60 backdrop-blur-xl rounded-[32px] shadow-[16px_16px_32px_rgba(160,150,180,0.2),-10px_-10px_24px_rgba(255,255,255,0.9),inset_6px_6px_12px_rgba(139,92,246,0.03),inset_-6px_-6px_12px_rgba(255,255,255,1)] p-4 sm:p-5">
+          <div className="bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.12),-6px_-6px_16px_rgba(255,255,255,0.6)] p-4 sm:p-5">
             <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
               <SortableContext items={orderedItems.map(getSortId)}>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-4">

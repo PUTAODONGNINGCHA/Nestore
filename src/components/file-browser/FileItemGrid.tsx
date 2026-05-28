@@ -139,7 +139,7 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
       <div
         ref={setNodeRef}
         style={style}
-        className="group relative bg-white/70 backdrop-blur-xl rounded-[32px] shadow-[16px_16px_32px_rgba(160,150,180,0.2),-10px_-10px_24px_rgba(255,255,255,0.9),inset_6px_6px_12px_rgba(139,92,246,0.03),inset_-6px_-6px_12px_rgba(255,255,255,1)] hover:-translate-y-2 hover:shadow-[24px_24px_48px_rgba(160,150,180,0.25),-14px_-14px_32px_rgba(255,255,255,0.95),inset_6px_6px_12px_rgba(139,92,246,0.03),inset_-6px_-6px_12px_rgba(255,255,255,1)] active:scale-[0.97] active:shadow-[inset_10px_10px_20px_#d9d4e3,inset_-10px_-10px_20px_#ffffff] cursor-pointer transition-all duration-300 p-3 sm:p-4 flex flex-col items-center gap-2"
+        className="group relative bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.15),-8px_-8px_16px_rgba(255,255,255,0.7)] hover:-translate-y-1.5 hover:shadow-[18px_18px_36px_rgba(160,150,180,0.2),-12px_-12px_24px_rgba(255,255,255,0.85)] active:scale-[0.97] active:shadow-[inset_8px_8px_16px_#d9d4e3,inset_-8px_-8px_16px_#ffffff] cursor-pointer transition-all duration-200 p-3 sm:p-4 flex flex-col items-center gap-2"
         onContextMenu={handleContextMenu}
         onClick={handleClick}
       >

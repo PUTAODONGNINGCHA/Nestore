@@ -47,7 +47,7 @@ export function ContextMenu({ isOpen, onClose, position, children }: ContextMenu
   return (
     <div
       ref={ref}
-      className="fixed z-50 bg-white/80 backdrop-blur-xl rounded-[24px] shadow-[16px_16px_32px_rgba(160,150,180,0.25),-10px_-10px_24px_rgba(255,255,255,0.9),inset_6px_6px_12px_rgba(139,92,246,0.03),inset_-6px_-6px_12px_rgba(255,255,255,1)] py-1.5 min-w-[170px]"
+      className="fixed z-50 bg-white rounded-[24px] shadow-[12px_12px_24px_rgba(160,150,180,0.2),-6px_-6px_16px_rgba(255,255,255,0.5)] py-1.5 min-w-[170px]"
       style={{ left: adjustedPos.x, top: adjustedPos.y }}
     >
       {children}
