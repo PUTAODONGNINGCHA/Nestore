@@ -139,24 +139,23 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
       <div
         ref={setNodeRef}
         style={style}
-        className="group relative bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.15),-8px_-8px_16px_rgba(255,255,255,0.7)] hover:-translate-y-1 hover:shadow-[18px_18px_36px_rgba(160,150,180,0.2),-12px_-12px_24px_rgba(255,255,255,0.85)] active:scale-[0.92] active:shadow-[inset_8px_8px_16px_#d9d4e3,inset_-8px_-8px_16px_#ffffff] cursor-pointer transition-transform duration-200 clay-bounce p-3 sm:p-4 flex flex-col items-center gap-2"
+        className="group relative bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.15),-8px_-8px_16px_rgba(255,255,255,0.7)] hover:-translate-y-1 hover:shadow-[18px_18px_36px_rgba(160,150,180,0.2),-12px_-12px_24px_rgba(255,255,255,0.85)] active:scale-[0.92] active:shadow-[inset_8px_8px_16px_#d9d4e3,inset_-8px_-8px_16px_#ffffff] cursor-pointer transition-transform duration-200 clay-bounce flex flex-col items-center py-3 sm:py-4 px-3 sm:px-4"
         onContextMenu={handleContextMenu}
         onClick={handleClick}
       >
-        {/* Icon / Thumbnail area */}
-        <div className="relative w-full aspect-square max-w-[88px] sm:max-w-20 shrink-0">
+        {/* Icon */}
+        <div className="relative w-full aspect-square max-w-[80px] sm:max-w-20 shrink-0">
           {isImage ? (
             <div className="w-full h-full rounded-2xl overflow-hidden shadow-[inset_6px_6px_12px_#d9d4e3,inset_-6px_-6px_12px_#ffffff]">
               <Thumbnail file={fileItem} />
             </div>
           ) : (
             <div className="w-full h-full rounded-2xl bg-gradient-to-br from-[#F0EDF7] to-[#F4F1FA] shadow-[inset_6px_6px_12px_#d9d4e3,inset_-6px_-6px_12px_#ffffff] flex items-center justify-center">
-              <Icon className={`w-10 h-10 sm:w-10 sm:h-10 ${type === 'folder' ? 'text-[#10B981]' : 'text-[#7C3AED]'}`} />
+              <Icon className={`w-9 h-9 sm:w-10 sm:h-10 ${type === 'folder' ? 'text-[#10B981]' : 'text-[#7C3AED]'}`} />
             </div>
           )}
         </div>
-
-        {/* Name / Rename input */}
+        {/* Name */}
         {isRenaming ? (
           <input
             ref={inputRef}
@@ -168,11 +167,11 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
               if (e.key === 'Enter') submitRename()
               if (e.key === 'Escape') setIsRenaming(false)
             }}
-            className="w-full px-2 py-1 text-xs text-center rounded-[16px] bg-[#EFEBF5] text-[#332F3A] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#7C3AED]/30"
+            className="w-full px-2 py-1 text-xs text-center rounded-[16px] bg-[#EFEBF5] text-[#332F3A] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#7C3AED]/30 mt-2"
             onClick={(e) => e.stopPropagation()}
           />
         ) : (
-          <div className="w-full text-center min-w-0">
+          <div className="w-full text-center min-w-0 mt-2">
             <p className="text-xs sm:text-xs font-bold text-[#332F3A] truncate leading-tight" style={{ fontFamily: 'Nunito, sans-serif' }}>{item.name}</p>
             {isFile && (
               <p className="text-[10px] sm:text-[10px] text-[#635F69] mt-0.5">
@@ -182,33 +181,33 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
           </div>
         )}
 
-        {/* Action buttons — ≡ centered under name, ↓ and ⋮ to the right */}
-        <div className="flex items-center justify-center gap-1 w-full sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 mt-auto pt-0.5 pl-7">
+        {/* Action buttons — right of card, vertically centered */}
+        <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 flex-col items-center gap-1.5 flex sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
           <button
-            {...attributes}
-            {...listeners}
-            onClick={(e) => e.stopPropagation()}
-            className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-[16px] text-[#635F69] hover:text-[#7C3AED] hover:bg-white/50 active:bg-white/70 active:shadow-[inset_4px_4px_8px_#d9d4e3,inset_-4px_-4px_8px_#ffffff] transition-all duration-200 cursor-grab active:cursor-grabbing"
-            title="拖拽排序"
+            ref={moreRef}
+            onClick={(e) => { e.stopPropagation(); handleOpenMenu(e) }}
+            className="w-9 h-9 flex items-center justify-center rounded-[16px] bg-white text-[#635F69] shadow-[4px_4px_8px_rgba(160,150,180,0.15),-4px_-4px_8px_rgba(255,255,255,0.8)] hover:text-[#7C3AED] hover:shadow-[6px_6px_12px_rgba(160,150,180,0.2),-6px_-6px_12px_rgba(255,255,255,0.9)] active:scale-[0.92] transition-all duration-200 cursor-pointer"
+            title="更多"
           >
-            <GripVertical className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+            <MoreVertical className="w-4 h-4" />
           </button>
           {isFile && onDownload && (
             <button
               onClick={(e) => { e.stopPropagation(); onDownload(fileItem) }}
-              className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-[16px] text-[#635F69] hover:text-[#7C3AED] hover:bg-white/50 active:bg-white/70 active:shadow-[inset_4px_4px_8px_#d9d4e3,inset_-4px_-4px_8px_#ffffff] transition-all duration-200 cursor-pointer"
+              className="w-9 h-9 flex items-center justify-center rounded-[16px] bg-white text-[#635F69] shadow-[4px_4px_8px_rgba(160,150,180,0.15),-4px_-4px_8px_rgba(255,255,255,0.8)] hover:text-[#7C3AED] hover:shadow-[6px_6px_12px_rgba(160,150,180,0.2),-6px_-6px_12px_rgba(255,255,255,0.9)] active:scale-[0.92] transition-all duration-200 cursor-pointer"
               title="下载"
             >
-              <Download className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+              <Download className="w-4 h-4" />
             </button>
           )}
           <button
-            ref={moreRef}
-            onClick={handleOpenMenu}
-            className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-[16px] text-[#635F69] hover:text-[#7C3AED] hover:bg-white/50 active:bg-white/70 active:shadow-[inset_4px_4px_8px_#d9d4e3,inset_-4px_-4px_8px_#ffffff] transition-all duration-200 cursor-pointer"
-            title="更多"
+            {...attributes}
+            {...listeners}
+            onClick={(e) => e.stopPropagation()}
+            className="w-9 h-9 flex items-center justify-center rounded-[16px] bg-white text-[#635F69] shadow-[4px_4px_8px_rgba(160,150,180,0.15),-4px_-4px_8px_rgba(255,255,255,0.8)] hover:text-[#7C3AED] hover:shadow-[6px_6px_12px_rgba(160,150,180,0.2),-6px_-6px_12px_rgba(255,255,255,0.9)] active:scale-[0.92] transition-all duration-200 cursor-grab active:cursor-grabbing"
+            title="拖拽排序"
           >
-            <MoreVertical className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+            <GripVertical className="w-4 h-4" />
           </button>
         </div>
       </div>

@@ -42,10 +42,10 @@ export function MoveFileDialog({ isOpen, onClose, onMove }: MoveFileDialogProps)
         ) : (
           <div className="max-h-60 overflow-y-auto space-y-1 scrollbar-thin">
             <button
-              className={`w-full text-left px-3 py-2.5 rounded-[16px] text-sm transition-all duration-200 ${
+              className={`w-full text-left px-4 py-3 rounded-[20px] text-sm font-bold transition-all duration-200 ${
                 selectedFolderId === null
-                  ? 'bg-[#E0E5EC] dark:bg-[#1a1d23] text-[#6C63FF] shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)]'
-                  : 'text-[#3D4852] dark:text-[#E8ECF1] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)]'
+                  ? 'bg-[#7C3AED]/10 text-[#7C3AED]'
+                  : 'text-[#635F69] hover:bg-[#7C3AED]/5 hover:text-[#7C3AED]'
               }`}
               onClick={() => setSelectedFolderId(null)}
             >
@@ -57,10 +57,10 @@ export function MoveFileDialog({ isOpen, onClose, onMove }: MoveFileDialogProps)
             {folders.map((folder) => (
               <button
                 key={folder.id}
-                className={`w-full text-left px-3 py-2.5 rounded-[16px] text-sm transition-all duration-200 ${
+                className={`w-full text-left px-4 py-3 rounded-[20px] text-sm font-bold transition-all duration-200 ${
                   selectedFolderId === folder.id
-                    ? 'bg-[#E0E5EC] dark:bg-[#1a1d23] text-[#6C63FF] shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)]'
-                    : 'text-[#3D4852] dark:text-[#E8ECF1] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)]'
+                    ? 'bg-[#7C3AED]/10 text-[#7C3AED]'
+                    : 'text-[#635F69] hover:bg-[#7C3AED]/5 hover:text-[#7C3AED]'
                 }`}
                 onClick={() => setSelectedFolderId(folder.id)}
               >
