@@ -24,6 +24,9 @@ export function isPreviewable(mimeType: string): boolean {
   if (mimeType.startsWith('video/')) return true
   if (mimeType.startsWith('text/')) return true
   if (mimeType === 'application/pdf') return true
+  if (mimeType.includes('spreadsheet') || mimeType.includes('excel')) return true
+  if (mimeType.includes('document') || mimeType.includes('word')) return true
+  if (mimeType.includes('presentation') || mimeType.includes('powerpoint')) return true
   return false
 }
 

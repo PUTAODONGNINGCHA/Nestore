@@ -22,6 +22,9 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
   const isImage = file.mime_type.startsWith('image/')
   const isVideo = file.mime_type.startsWith('video/')
   const isPdf = file.mime_type === 'application/pdf'
+  const isOffice = file.mime_type.includes('spreadsheet') || file.mime_type.includes('excel') ||
+    file.mime_type.includes('document') || file.mime_type.includes('word') ||
+    file.mime_type.includes('presentation') || file.mime_type.includes('powerpoint')
 
   useEffect(() => {
     const load = async () => {
@@ -76,12 +79,19 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
           {isImage && signedUrl && <ImagePreview src={signedUrl} name={file.name} />}
           {isVideo && signedUrl && <VideoPreview src={signedUrl} name={file.name} />}
           {isPdf && signedUrl && (
-            <iframe src={signedUrl} className="w-full h-[70vh] rounded-[16px]" title={file.name} />
+            <iframe src={signedUrl} className="w-full h-[70vh] rounded-[24px]" title={file.name} />
           )}
           {isText && textContent !== null && <TextPreview content={textContent} />}
-          {!isImage && !isVideo && !isPdf && !isText && (
+          {isOffice && signedUrl && (
+            <iframe
+              src={`https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(signedUrl)}`}
+              className="w-full h-[70vh] rounded-[24px]"
+              title={file.name}
+            />
+          )}
+          {!isImage && !isVideo && !isPdf && !isText && !isOffice && (
             <div className="text-center py-16">
-              <p className="text-[#6B7280] dark:text-[#9CA3AF] mb-4 font-medium">暂不支持预览此文件类型</p>
+              <p className="text-[#635F69] mb-4 font-medium">暂不支持预览此文件类型</p>
               <Button variant="primary" onClick={handleDownload}>下载文件</Button>
             </div>
           )}

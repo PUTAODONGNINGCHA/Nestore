@@ -139,7 +139,7 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
       <div
         ref={setNodeRef}
         style={style}
-        className="group relative bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.15),-8px_-8px_16px_rgba(255,255,255,0.7)] hover:-translate-y-1.5 hover:shadow-[18px_18px_36px_rgba(160,150,180,0.2),-12px_-12px_24px_rgba(255,255,255,0.85)] active:scale-[0.97] active:shadow-[inset_8px_8px_16px_#d9d4e3,inset_-8px_-8px_16px_#ffffff] cursor-pointer transition-all duration-200 p-3 sm:p-4 flex flex-col items-center gap-2"
+        className="group relative bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.15),-8px_-8px_16px_rgba(255,255,255,0.7)] hover:-translate-y-1 hover:shadow-[18px_18px_36px_rgba(160,150,180,0.2),-12px_-12px_24px_rgba(255,255,255,0.85)] active:scale-[0.97] active:shadow-[inset_8px_8px_16px_#d9d4e3,inset_-8px_-8px_16px_#ffffff] cursor-pointer transition-transform duration-150 p-3 sm:p-4 flex flex-col items-center gap-2"
         onContextMenu={handleContextMenu}
         onClick={handleClick}
       >
