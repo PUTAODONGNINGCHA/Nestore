@@ -32,7 +32,7 @@ export function MainLayout({ children, onLogout, headerRight }: MainLayoutProps)
             {headerRight}
             <button
               onClick={onLogout}
-              className="w-10 h-10 flex items-center justify-center rounded-[20px] bg-white text-[#635F69] shadow-[8px_8px_16px_rgba(160,150,180,0.15),-4px_-4px_12px_rgba(255,255,255,0.8)] hover:-translate-y-0.5 hover:shadow-[12px_12px_24px_rgba(160,150,180,0.2),-6px_-6px_16px_rgba(255,255,255,0.9)] active:scale-[0.92] active:shadow-[inset_6px_6px_12px_#d9d4e3,inset_-6px_-6px_12px_#ffffff] transition-all duration-200"
+              className="w-10 h-10 flex items-center justify-center rounded-[20px] bg-white text-[#635F69] shadow-[8px_8px_16px_rgba(160,150,180,0.15),-4px_-4px_12px_rgba(255,255,255,0.8)] hover:-translate-y-0.5 hover:shadow-[12px_12px_24px_rgba(160,150,180,0.2),-6px_-6px_16px_rgba(255,255,255,0.9)] active:scale-[0.92] active:shadow-[inset_6px_6px_12px_#d9d4e3,inset_-6px_-6px_12px_#ffffff] transition-all duration-200 clay-bounce"
               title="退出"
             >
               <LogOut className="w-5 h-5" />

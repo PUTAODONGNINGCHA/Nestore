@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useLayoutEffect, useRef, type ReactNode } from 'react'
 
 interface ContextMenuProps {
   isOpen: boolean
@@ -9,30 +9,27 @@ interface ContextMenuProps {
 
 export function ContextMenu({ isOpen, onClose, position, children }: ContextMenuProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const [adjustedPos, setAdjustedPos] = useState(position)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isOpen || !ref.current) return
     const menu = ref.current
     const rect = menu.getBoundingClientRect()
     let x = position.x
     let y = position.y
 
-    // Overflow right edge
     if (x + rect.width > window.innerWidth) {
       x = window.innerWidth - rect.width - 12
     }
-    // Overflow bottom edge → open upward
     if (y + rect.height > window.innerHeight) {
       y = position.y - rect.height - 8
     }
-    // Still off screen at top? clamp
     if (y < 4) y = 4
 
-    setAdjustedPos({ x, y })
+    menu.style.left = `${x}px`
+    menu.style.top = `${y}px`
   }, [isOpen, position])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         onClose()
@@ -48,7 +45,7 @@ export function ContextMenu({ isOpen, onClose, position, children }: ContextMenu
     <div
       ref={ref}
       className="fixed z-50 bg-white rounded-[24px] shadow-[12px_12px_24px_rgba(160,150,180,0.2),-6px_-6px_16px_rgba(255,255,255,0.5)] py-1.5 min-w-[170px]"
-      style={{ left: adjustedPos.x, top: adjustedPos.y }}
+      style={{ left: position.x, top: position.y }}
     >
       {children}
     </div>
