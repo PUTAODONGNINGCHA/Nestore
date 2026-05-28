@@ -12,7 +12,6 @@ import { FileItemCard } from './FileItemGrid'
 import { Breadcrumb } from './Breadcrumb'
 import { EmptyState } from './EmptyState'
 import { MoveFileDialog } from './MoveFileDialog'
-import { Button } from '@/components/ui/Button'
 import { useFiles } from '@/hooks/useFiles'
 import { useFolders } from '@/hooks/useFolders'
 import { useUpload } from '@/hooks/useUpload'
@@ -141,21 +140,17 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
       {/* Toolbar */}
       <div className="bg-[#E0E5EC] dark:bg-[#1a1d23] px-3 sm:px-4 lg:px-6 py-2.5">
         <div className="flex items-center justify-between gap-2">
-          <div className="min-w-0 flex-1 overflow-x-auto">
-            <Breadcrumb crumbs={crumbs} onNavigate={onNavigate} />
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2 min-w-0">
             <div className="relative">
-              <Button
-                variant="secondary"
-                size="sm"
+              <button
                 onClick={() => setShowNewFolderInput(!showNewFolderInput)}
+                className="w-10 h-10 flex items-center justify-center rounded-2xl bg-[#E0E5EC] dark:bg-[#1a1d23] text-[#3D4852] dark:text-[#E8ECF1] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgb(0_0_0_/_0.4),-9px_-9px_16px_rgba(255,255,255,0.05)] hover:shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)] active:shadow-[inset_6px_6px_10px_rgb(163_177_198_/_0.6),inset_-6px_-6px_10px_rgba(255,255,255,0.5)] dark:active:shadow-[inset_6px_6px_10px_rgb(0_0_0_/_0.4),inset_-6px_-6px_10px_rgba(255,255,255,0.05)] transition-all duration-200 shrink-0"
+                title="新建文件夹"
               >
-                <FolderPlus className="w-4 h-4" />
-                <span className="hidden sm:inline">新建文件夹</span>
-              </Button>
+                <FolderPlus className="w-5 h-5" />
+              </button>
               {showNewFolderInput && (
-                <div className="absolute right-0 top-full mt-2 z-20">
+                <div className="absolute left-0 top-full mt-2 z-20">
                   <input
                     type="text"
                     value={newFolderName}
@@ -172,7 +167,11 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
                 </div>
               )}
             </div>
+            <div className="min-w-0 overflow-x-auto">
+              <Breadcrumb crumbs={crumbs} onNavigate={onNavigate} />
+            </div>
           </div>
+          <div className="shrink-0" />
         </div>
       </div>
 
