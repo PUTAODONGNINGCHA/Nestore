@@ -34,8 +34,8 @@ function getSortId(entry: Entry) {
 
 export function FileList({ currentFolderId, onNavigate }: FileListProps) {
   const uploadInputRef = useRef<HTMLInputElement>(null)
-  const { folders, isLoading: foldersLoading, refresh: refreshFolders, rename: renameFolder, remove: removeFolder } = useFolders(currentFolderId)
-  const { files, isLoading: filesLoading, refresh: refreshFiles, rename: renameFile, remove: removeFile } = useFiles(currentFolderId)
+  const { folders, isLoading: foldersLoading, error: foldersError, refresh: refreshFolders, rename: renameFolder, remove: removeFolder } = useFolders(currentFolderId)
+  const { files, isLoading: filesLoading, error: filesError, refresh: refreshFiles, rename: renameFile, remove: removeFile } = useFiles(currentFolderId)
   const { crumbs } = useBreadcrumbs(currentFolderId)
   const { isUploading, progress, error: uploadError, uploadMultiple } = useUpload(currentFolderId, () => { refreshFiles(); refreshFolders() })
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null)
@@ -190,9 +190,11 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
       </div>
 
       {/* Upload progress & error */}
-      {uploadError && (
-        <div className="px-3 sm:px-4 lg:px-6 pb-2">
-          <p className="text-xs text-red-500 dark:text-red-400">{uploadError}</p>
+      {(uploadError || filesError || foldersError) && (
+        <div className="px-3 sm:px-4 lg:px-6 pb-2 space-y-1">
+          {uploadError && <p className="text-xs text-red-500 dark:text-red-400">上传: {uploadError}</p>}
+          {filesError && <p className="text-xs text-red-500 dark:text-red-400">文件: {filesError}</p>}
+          {foldersError && <p className="text-xs text-red-500 dark:text-red-400">文件夹: {foldersError}</p>}
         </div>
       )}
       {isUploading && (
