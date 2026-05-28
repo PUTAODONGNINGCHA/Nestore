@@ -9,13 +9,17 @@ import {
   FolderIcon,
   Download,
   MoreVertical,
+  GripVertical,
 } from 'lucide-react'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { ContextMenu, ContextMenuItem } from '@/components/ui/ContextMenu'
 import { formatFileSize, getFileIcon } from '@/lib/utils'
 import { getStorageAdapter } from '@/storage/factory'
 import type { FileItem as FileItemType, Folder as FolderType } from '@/types'
 
 interface FileItemCardProps {
+  id: string
   item: FileItemType | FolderType
   type: 'file' | 'folder'
   onNavigate?: (folderId: string) => void
@@ -65,13 +69,29 @@ function Thumbnail({ file }: { file: FileItemType }) {
   return null
 }
 
-export function FileItemCard({ item, type, onNavigate, onPreview, onDownload, onMove, onRename, onDelete }: FileItemCardProps) {
+export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload, onMove, onRename, onDelete }: FileItemCardProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuPos, setMenuPos] = useState({ x: 0, y: 0 })
   const [isRenaming, setIsRenaming] = useState(false)
   const [newName, setNewName] = useState(item.name)
   const inputRef = useRef<HTMLInputElement>(null)
   const moreRef = useRef<HTMLButtonElement>(null)
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+    zIndex: isDragging ? 50 : undefined,
+  }
 
   const Icon = getIcon(type, type === 'file' ? (item as FileItemType).mime_type : undefined)
   const isFile = type === 'file'
@@ -117,10 +137,22 @@ export function FileItemCard({ item, type, onNavigate, onPreview, onDownload, on
   return (
     <>
       <div
+        ref={setNodeRef}
+        style={style}
         className="group relative bg-[#E0E5EC] dark:bg-[#1a1d23] rounded-[32px] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgb(0_0_0_/_0.4),-9px_-9px_16px_rgba(255,255,255,0.05)] hover:shadow-[12px_12px_20px_rgb(163_177_198_/_0.7),-12px_-12px_20px_rgba(255,255,255,0.6)] dark:hover:shadow-[12px_12px_20px_rgb(0_0_0_/_0.5),-12px_-12px_20px_rgba(255,255,255,0.05)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_6px_6px_10px_rgb(163_177_198_/_0.6),inset_-6px_-6px_10px_rgba(255,255,255,0.5)] dark:active:shadow-[inset_6px_6px_10px_rgb(0_0_0_/_0.4),inset_-6px_-6px_10px_rgba(255,255,255,0.05)] cursor-pointer transition-all duration-300 p-3 sm:p-4 flex flex-col items-center gap-2"
         onContextMenu={handleContextMenu}
         onClick={handleClick}
       >
+        {/* Drag handle */}
+        <button
+          {...attributes}
+          {...listeners}
+          onClick={(e) => e.stopPropagation()}
+          className="absolute top-2 left-2 w-7 h-7 flex items-center justify-center rounded-full text-[#6B7280] hover:text-[#6C63FF] hover:bg-[#E0E5EC] dark:hover:bg-[#1a1d23] opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-grab active:cursor-grabbing z-10"
+          title="拖拽排序"
+        >
+          <GripVertical className="w-4 h-4" />
+        </button>
         {/* Icon / Thumbnail area */}
         <div className="relative w-full aspect-square max-w-[88px] sm:max-w-20 shrink-0">
           {isImage ? (

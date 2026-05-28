@@ -27,4 +27,5 @@ export interface StorageAdapter {
   // Utility
   getAllFolders(): Promise<Folder[]>
   getThumbnailUrl(storagePath: string): Promise<string | null>
+  updateSortOrder(items: { id: string; sort_order: number; type: 'folder' | 'file' }[]): Promise<void>
 }

@@ -1,5 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { FolderPlus, Upload } from 'lucide-react'
+import {
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core'
+import { SortableContext } from '@dnd-kit/sortable'
 import { FileItemCard } from './FileItemGrid'
 import { Breadcrumb } from './Breadcrumb'
 import { EmptyState } from './EmptyState'
@@ -20,6 +28,12 @@ interface FileListProps {
   onNavigate: (folderId: string | null) => void
 }
 
+type Entry = { type: 'folder'; data: import('@/types').Folder } | { type: 'file'; data: FileItem }
+
+function getSortId(entry: Entry) {
+  return entry.type === 'folder' ? `folder-${entry.data.id}` : `file-${entry.data.id}`
+}
+
 export function FileList({ currentFolderId, onNavigate }: FileListProps) {
   const { folders, isLoading: foldersLoading, refresh: refreshFolders, create: createFolder, rename: renameFolder, remove: removeFolder } = useFolders(currentFolderId)
   const { files, isLoading: filesLoading, refresh: refreshFiles, rename: renameFile, remove: removeFile } = useFiles(currentFolderId)
@@ -29,12 +43,52 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
   const [moveFile, setMoveFile] = useState<FileItem | null>(null)
   const [showNewFolderInput, setShowNewFolderInput] = useState(false)
   const [newFolderName, setNewFolderName] = useState('')
+  const [orderedItems, setOrderedItems] = useState<Entry[]>([])
+
+  // Sync orderedItems from folders/files
+  useEffect(() => {
+    const items: Entry[] = [
+      ...folders.map((f) => ({ type: 'folder' as const, data: f })),
+      ...files.map((f) => ({ type: 'file' as const, data: f })),
+    ]
+    setOrderedItems(items)
+  }, [folders, files])
 
   const isLoading = foldersLoading || filesLoading
-  const allItems = [
-    ...folders.map((f) => ({ type: 'folder' as const, data: f })),
-    ...files.map((f) => ({ type: 'file' as const, data: f })),
-  ].sort((a, b) => a.data.name.localeCompare(b.data.name))
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
+  )
+
+  const handleDragEnd = useCallback(async (event: DragEndEvent) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+
+    const oldIndex = orderedItems.findIndex((item) => getSortId(item) === active.id)
+    const newIndex = orderedItems.findIndex((item) => getSortId(item) === over.id)
+    if (oldIndex === -1 || newIndex === -1) return
+
+    // Reorder locally
+    const reordered = [...orderedItems]
+    const [moved] = reordered.splice(oldIndex, 1)
+    if (!moved) return
+    reordered.splice(newIndex, 0, moved)
+    setOrderedItems(reordered)
+
+    // Persist new sort_order to DB
+    const updates = reordered.map((item, i) => ({
+      id: item.data.id,
+      sort_order: i,
+      type: item.type as 'folder' | 'file',
+    }))
+    try {
+      await getStorageAdapter().updateSortOrder(updates)
+    } catch {
+      // Refresh from server on failure
+      refreshFiles()
+      refreshFolders()
+    }
+  }, [orderedItems, refreshFiles, refreshFolders])
 
   const handleCreateFolder = async () => {
     if (!newFolderName.trim()) return
@@ -144,39 +198,44 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
         </label>
       </div>
 
-      {/* File list */}
+      {/* File grid with drag-and-drop */}
       <div className="flex-1 overflow-y-auto px-3 sm:px-4 lg:px-6 py-3 scrollbar-thin">
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
             <div className="neumo-spinner" />
           </div>
-        ) : allItems.length === 0 ? (
+        ) : orderedItems.length === 0 ? (
           <EmptyState />
         ) : (
           <div className="bg-[#E0E5EC] dark:bg-[#1a1d23] rounded-[32px] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgb(0_0_0_/_0.4),-9px_-9px_16px_rgba(255,255,255,0.05)] p-4 sm:p-5">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-4">
-              {allItems.map((item) => (
-                <FileItemCard
-                  key={item.type === 'folder' ? `f-${item.data.id}` : `file-${item.data.id}`}
-                  item={item.data}
-                  type={item.type}
-                  onNavigate={(id) => onNavigate(id)}
-                  onPreview={(file) => setPreviewFile(file)}
-                  onDownload={handleDownload}
-                  onMove={(file) => setMoveFile(file)}
-                  onRename={(id, name) => {
-                    if (item.type === 'folder') renameFolder(id, name)
-                    else renameFile(id, name)
-                  }}
-                  onDelete={(id) => handleDelete(id, item.type)}
-                />
-              ))}
-            </div>
+            <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+              <SortableContext items={orderedItems.map(getSortId)}>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-4">
+                  {orderedItems.map((item) => (
+                    <FileItemCard
+                      key={getSortId(item)}
+                      id={getSortId(item)}
+                      item={item.data}
+                      type={item.type}
+                      onNavigate={(id) => onNavigate(id)}
+                      onPreview={(file) => setPreviewFile(file)}
+                      onDownload={handleDownload}
+                      onMove={(file) => setMoveFile(file)}
+                      onRename={(id, name) => {
+                        if (item.type === 'folder') renameFolder(id, name)
+                        else renameFile(id, name)
+                      }}
+                      onDelete={(id) => handleDelete(id, item.type)}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
           </div>
         )}
       </div>
 
-      {/* Upload progress (visible during upload) */}
+      {/* Upload progress */}
       {isUploading && (
         <div className="px-3 sm:px-4 lg:px-6 pb-3">
           <ProgressBar progress={50} />

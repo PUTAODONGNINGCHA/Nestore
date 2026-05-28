@@ -3,6 +3,7 @@ export interface Folder {
   name: string
   parent_id: string | null
   path: string
+  sort_order: number
   created_at: string
   updated_at: string
 }
@@ -15,6 +16,7 @@ export interface FileItem {
   storage_path: string
   folder_id: string | null
   owner_id: string
+  sort_order: number
   created_at: string
   updated_at: string
 }

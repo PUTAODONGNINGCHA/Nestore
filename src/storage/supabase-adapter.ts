@@ -62,6 +62,7 @@ export class SupabaseAdapter implements StorageAdapter {
       .from('folders')
       .select('*')
       .eq('owner_id', ownerId)
+      .order('sort_order')
       .order('name')
 
     if (parentId === null) {
@@ -81,6 +82,7 @@ export class SupabaseAdapter implements StorageAdapter {
       .from('folders')
       .select('*')
       .eq('owner_id', ownerId)
+      .order('sort_order')
       .order('name')
     if (error) throw new Error(`Failed to fetch all folders: ${error.message}`)
     return data as Folder[]
@@ -120,6 +122,7 @@ export class SupabaseAdapter implements StorageAdapter {
       .from('files')
       .select('*')
       .eq('owner_id', ownerId)
+      .order('sort_order')
       .order('name')
 
     if (folderId === null) {
@@ -220,6 +223,18 @@ export class SupabaseAdapter implements StorageAdapter {
       return await this.fetchSignedUrl(storagePath, 3600)
     } catch {
       return null
+    }
+  }
+
+  async updateSortOrder(items: { id: string; sort_order: number; type: 'folder' | 'file' }[]): Promise<void> {
+    const table = (type: 'folder' | 'file') => type === 'folder' ? 'folders' : 'files'
+
+    for (const item of items) {
+      const { error } = await this.client
+        .from(table(item.type))
+        .update({ sort_order: item.sort_order, updated_at: new Date().toISOString() })
+        .eq('id', item.id)
+      if (error) throw new Error(`Failed to update sort order: ${error.message}`)
     }
   }
 
