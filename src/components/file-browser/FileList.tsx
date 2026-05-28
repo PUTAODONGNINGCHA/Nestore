@@ -124,7 +124,25 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
   }
 
   const handleDrop = async (acceptedFiles: File[]) => {
-    await uploadMultiple(acceptedFiles)
+    // Check for duplicate filenames
+    const existingNames = new Set(files.map((f) => f.name))
+    const newFiles = acceptedFiles.filter((f) => !existingNames.has(f.name))
+    const dupFiles = acceptedFiles.filter((f) => existingNames.has(f.name))
+
+    if (dupFiles.length > 0) {
+      const first = dupFiles[0]
+      if (first && confirm(`文件 "${first.name}" 已存在，是否覆盖？`)) {
+        for (const dup of dupFiles) {
+          const old = files.find((f) => f.name === dup.name)
+          if (old) await removeFile(old.id)
+        }
+        newFiles.push(...dupFiles)
+      }
+    }
+
+    if (newFiles.length > 0) {
+      await uploadMultiple(newFiles)
+    }
   }
 
   return (

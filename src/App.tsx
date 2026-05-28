@@ -14,12 +14,17 @@ export default function App() {
   const [newFolderName, setNewFolderName] = useState('')
 
   const handleCreateFolder = useCallback(async () => {
-    if (!newFolderName.trim()) return
-    await createFolder(newFolderName.trim())
+    const name = newFolderName.trim()
+    if (!name) return
+    if (folders.some((f) => f.name === name)) {
+      alert('已存在同名文件夹')
+      return
+    }
+    await createFolder(name)
     setNewFolderName('')
     setShowNewFolderInput(false)
     refreshFolders()
-  }, [newFolderName, createFolder, refreshFolders])
+  }, [newFolderName, createFolder, refreshFolders, folders])
 
   if (isLoading) {
     return (
