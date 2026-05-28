@@ -182,16 +182,8 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
           </div>
         )}
 
-        {/* Action buttons — right of card, vertically centered */}
-        <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 flex-col items-center gap-1.5 flex sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
-          <button
-            ref={moreRef}
-            onClick={(e) => { e.stopPropagation(); handleOpenMenu(e) }}
-            className="w-9 h-9 flex items-center justify-center rounded-[16px] bg-white text-[#635F69] shadow-[4px_4px_8px_rgba(160,150,180,0.15),-4px_-4px_8px_rgba(255,255,255,0.8)] hover:text-[#7C3AED] hover:shadow-[6px_6px_12px_rgba(160,150,180,0.2),-6px_-6px_12px_rgba(255,255,255,0.9)] active:scale-[0.92] transition-all duration-200 cursor-pointer"
-            title="更多"
-          >
-            <MoreVertical className="w-4 h-4" />
-          </button>
+        {/* ↓ ⋮ — bottom-right, vertical stack */}
+        <div className="absolute right-3 sm:right-4 bottom-3 sm:bottom-4 flex-col items-center gap-1.5 flex sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
           {isFile && onDownload && (
             <button
               onClick={(e) => { e.stopPropagation(); onDownload(fileItem) }}
@@ -201,6 +193,14 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
               <Download className="w-4 h-4" />
             </button>
           )}
+          <button
+            ref={moreRef}
+            onClick={(e) => { e.stopPropagation(); handleOpenMenu(e) }}
+            className="w-9 h-9 flex items-center justify-center rounded-[16px] bg-white text-[#635F69] shadow-[4px_4px_8px_rgba(160,150,180,0.15),-4px_-4px_8px_rgba(255,255,255,0.8)] hover:text-[#7C3AED] hover:shadow-[6px_6px_12px_rgba(160,150,180,0.2),-6px_-6px_12px_rgba(255,255,255,0.9)] active:scale-[0.92] transition-all duration-200 cursor-pointer"
+            title="更多"
+          >
+            <MoreVertical className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
