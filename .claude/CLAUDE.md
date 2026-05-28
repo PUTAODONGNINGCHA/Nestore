@@ -18,7 +18,7 @@
 | 项目 | 内容 |
 |------|------|
 | 项目名称 | Nestore |
-| 项目定位 | 面向家庭的个人云盘共享平台，通过共享密码访问 |
+| 项目定位 | 面向个人的云盘共享平台，通过共享密码访问 |
 | 当前阶段 | 阶段一 / 需求对齐 |
 | 技术栈 | React + TypeScript + Vite + Supabase + Tailwind CSS |
 | Git 仓库 | `git@github.com:PUTAODONGNINGCHA/Nestore.git` |

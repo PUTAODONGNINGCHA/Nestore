@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { FolderPlus } from 'lucide-react'
 import {
   DndContext,
@@ -35,10 +35,11 @@ function getSortId(entry: Entry) {
 }
 
 export function FileList({ currentFolderId, onNavigate }: FileListProps) {
+  const uploadInputRef = useRef<HTMLInputElement>(null)
   const { folders, isLoading: foldersLoading, refresh: refreshFolders, create: createFolder, rename: renameFolder, remove: removeFolder } = useFolders(currentFolderId)
   const { files, isLoading: filesLoading, refresh: refreshFiles, rename: renameFile, remove: removeFile } = useFiles(currentFolderId)
   const { crumbs } = useBreadcrumbs(currentFolderId)
-  const { isUploading, uploadMultiple } = useUpload(currentFolderId, () => { refreshFiles(); refreshFolders() })
+  const { isUploading, progress, error: uploadError, uploadMultiple } = useUpload(currentFolderId, () => { refreshFiles(); refreshFolders() })
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null)
   const [moveFile, setMoveFile] = useState<FileItem | null>(null)
   const [showNewFolderInput, setShowNewFolderInput] = useState(false)
@@ -179,6 +180,17 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
       <div className="px-3 sm:px-4 lg:px-6 pt-3">
         <FileUploader onDrop={handleDrop} />
       </div>
+      <input
+        ref={uploadInputRef}
+        type="file"
+        multiple
+        className="hidden"
+        onChange={(e) => {
+          const files = Array.from(e.target.files || [])
+          if (files.length > 0) handleDrop(files)
+          e.target.value = ''
+        }}
+      />
 
       {/* File grid with drag-and-drop */}
       <div className="flex-1 overflow-y-auto px-3 sm:px-4 lg:px-6 py-3 scrollbar-thin">
@@ -187,7 +199,7 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
             <div className="neumo-spinner" />
           </div>
         ) : orderedItems.length === 0 ? (
-          <EmptyState />
+          <EmptyState onUploadClick={() => uploadInputRef.current?.click()} />
         ) : (
           <div className="bg-[#E0E5EC] dark:bg-[#1a1d23] rounded-[32px] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgb(0_0_0_/_0.4),-9px_-9px_16px_rgba(255,255,255,0.05)] p-4 sm:p-5">
             <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
@@ -217,10 +229,15 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
         )}
       </div>
 
-      {/* Upload progress */}
+      {/* Upload progress & error */}
+      {uploadError && (
+        <div className="px-3 sm:px-4 lg:px-6 pb-2">
+          <p className="text-xs text-red-500 dark:text-red-400">{uploadError}</p>
+        </div>
+      )}
       {isUploading && (
         <div className="px-3 sm:px-4 lg:px-6 pb-3">
-          <ProgressBar progress={50} />
+          <ProgressBar progress={progress} />
           <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] mt-1">正在上传...</p>
         </div>
       )}

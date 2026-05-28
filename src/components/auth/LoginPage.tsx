@@ -35,7 +35,7 @@ export function LoginPage({ onLogin, error, isLoading }: LoginPageProps) {
               </svg>
             </div>
           </div>
-          <h1 className="text-2xl font-extrabold text-[#3D4852] dark:text-[#E8ECF1] font-display tracking-tight">家庭云盘</h1>
+          <h1 className="text-2xl font-extrabold text-[#3D4852] dark:text-[#E8ECF1] font-display tracking-tight">个人云盘</h1>
           <p className="text-[#6B7280] dark:text-[#9CA3AF] mt-2 text-sm">输入密码进入共享空间</p>
         </div>
 

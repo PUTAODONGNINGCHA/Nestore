@@ -1,15 +1,12 @@
 import { useState } from 'react'
 import { LoginPage } from '@/components/auth/LoginPage'
 import { MainLayout } from '@/components/layout/MainLayout'
-import { Sidebar } from '@/components/layout/Sidebar'
 import { FileList } from '@/components/file-browser/FileList'
 import { useAuth } from '@/hooks/useAuth'
-import { useFolders } from '@/hooks/useFolders'
 
 export default function App() {
   const { isAuthenticated, isLoading, error, login, logout } = useAuth()
   const [currentFolderId, setCurrentFolderId] = useState<string | null>(null)
-  const { folders } = useFolders(null)
 
   if (isLoading) {
     return (
@@ -25,11 +22,6 @@ export default function App() {
 
   return (
     <MainLayout onLogout={logout}>
-      <Sidebar
-        currentFolderId={currentFolderId}
-        onNavigate={setCurrentFolderId}
-        folders={folders}
-      />
       <FileList
         currentFolderId={currentFolderId}
         onNavigate={setCurrentFolderId}

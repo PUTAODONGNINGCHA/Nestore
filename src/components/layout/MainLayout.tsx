@@ -20,7 +20,7 @@ export function MainLayout({ children, onLogout }: MainLayoutProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
                 </svg>
               </div>
-              <span className="font-bold text-lg hidden sm:inline font-display tracking-tight">家庭云盘</span>
+              <span className="font-bold text-lg hidden sm:inline font-display tracking-tight">个人云盘</span>
             </div>
           </div>
           <Button variant="ghost" size="sm" onClick={onLogout}>
@@ -29,7 +29,7 @@ export function MainLayout({ children, onLogout }: MainLayoutProps) {
           </Button>
         </div>
       </header>
-      <div className="flex-1 flex overflow-hidden px-4 lg:px-6 pb-4 gap-4">
+      <div className="flex-1 flex overflow-hidden">
         {children}
       </div>
     </div>
