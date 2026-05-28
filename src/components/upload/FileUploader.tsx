@@ -15,12 +15,11 @@ export function FileUploader({ onDrop }: FileUploaderProps) {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: handleDrop,
-    noClick: true,
     noKeyboard: true,
   })
 
   return (
-    <div {...getRootProps()} className="relative">
+    <div {...getRootProps()} className="relative cursor-pointer">
       {isDragActive && (
         <div className="absolute inset-0 z-30 flex items-center justify-center bg-[#E0E5EC]/80 dark:bg-[#1a1d23]/80 backdrop-blur-sm rounded-[32px] shadow-[inset_10px_10px_20px_rgb(163_177_198_/_0.7),inset_-10px_-10px_20px_rgba(255,255,255,0.6)] dark:shadow-[inset_10px_10px_20px_rgb(0_0_0_/_0.5),inset_-10px_-10px_20px_rgba(255,255,255,0.05)] m-3">
           <div className="flex flex-col items-center gap-2 text-[#6C63FF]">

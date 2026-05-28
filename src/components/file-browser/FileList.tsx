@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { FolderPlus, Upload } from 'lucide-react'
+import { FolderPlus } from 'lucide-react'
 import {
   DndContext,
   PointerSensor,
@@ -175,27 +175,9 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
         </div>
       </div>
 
-      {/* Upload zone & progress */}
+      {/* Upload zone & click upload */}
       <div className="px-3 sm:px-4 lg:px-6 pt-3">
         <FileUploader onDrop={handleDrop} />
-      </div>
-
-      {/* Upload button for mobile */}
-      <div className="px-3 sm:px-4 lg:px-6 pt-2 sm:hidden">
-        <label className="flex items-center justify-center gap-2 w-full py-4 rounded-[16px] bg-[#E0E5EC] text-[#6B7280] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] hover:shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] active:shadow-[inset_6px_6px_10px_rgb(163_177_198_/_0.6),inset_-6px_-6px_10px_rgba(255,255,255,0.5)] transition-all duration-200 cursor-pointer">
-          <Upload className="w-5 h-5 text-[#6C63FF]" />
-          <span className="text-sm font-medium text-[#3D4852]">选择文件上传</span>
-          <input
-            type="file"
-            multiple
-            className="hidden"
-            onChange={(e) => {
-              const files = Array.from(e.target.files || [])
-              if (files.length > 0) handleDrop(files)
-              e.target.value = ''
-            }}
-          />
-        </label>
       </div>
 
       {/* File grid with drag-and-drop */}

@@ -9,7 +9,7 @@ import { useFolders } from '@/hooks/useFolders'
 export default function App() {
   const { isAuthenticated, isLoading, error, login, logout } = useAuth()
   const [currentFolderId, setCurrentFolderId] = useState<string | null>(null)
-  const { folders, create: createFolder } = useFolders(null)
+  const { folders } = useFolders(null)
 
   if (isLoading) {
     return (
@@ -28,7 +28,6 @@ export default function App() {
       <Sidebar
         currentFolderId={currentFolderId}
         onNavigate={setCurrentFolderId}
-        onCreateFolder={createFolder}
         folders={folders}
       />
       <FileList
