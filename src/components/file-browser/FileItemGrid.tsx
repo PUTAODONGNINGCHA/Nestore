@@ -182,8 +182,8 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
           </div>
         )}
 
-        {/* ↓ ⋮ — bottom-right, vertical stack */}
-        <div className="absolute right-3 sm:right-4 bottom-3 sm:bottom-4 flex-col items-center gap-1.5 flex sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
+        {/* ↓ ⋮ — bottom-right, horizontal */}
+        <div className="absolute right-3 sm:right-4 bottom-3 sm:bottom-4 flex-row items-center gap-1 flex sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
           {isFile && onDownload && (
             <button
               onClick={(e) => { e.stopPropagation(); onDownload(fileItem) }}
