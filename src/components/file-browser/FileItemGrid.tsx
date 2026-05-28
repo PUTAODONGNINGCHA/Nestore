@@ -10,6 +10,7 @@ import {
   Download,
   Trash2,
   Move,
+  MoreVertical,
 } from 'lucide-react'
 import { ContextMenu, ContextMenuItem } from '@/components/ui/ContextMenu'
 import { formatFileSize, getFileIcon } from '@/lib/utils'
@@ -72,6 +73,7 @@ export function FileItemCard({ item, type, onNavigate, onPreview, onDownload, on
   const [isRenaming, setIsRenaming] = useState(false)
   const [newName, setNewName] = useState(item.name)
   const inputRef = useRef<HTMLInputElement>(null)
+  const moreRef = useRef<HTMLButtonElement>(null)
 
   const Icon = getIcon(type, type === 'file' ? (item as FileItemType).mime_type : undefined)
   const isFile = type === 'file'
@@ -82,6 +84,13 @@ export function FileItemCard({ item, type, onNavigate, onPreview, onDownload, on
     e.preventDefault()
     e.stopPropagation()
     setMenuPos({ x: e.clientX, y: e.clientY })
+    setMenuOpen(true)
+  }
+
+  const handleOpenMenu = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+    setMenuPos({ x: rect.left, y: rect.bottom + 4 })
     setMenuOpen(true)
   }
 
@@ -110,19 +119,19 @@ export function FileItemCard({ item, type, onNavigate, onPreview, onDownload, on
   return (
     <>
       <div
-        className="group relative bg-[#E0E5EC] dark:bg-[#1a1d23] rounded-[32px] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgb(0_0_0_/_0.4),-9px_-9px_16px_rgba(255,255,255,0.05)] hover:shadow-[12px_12px_20px_rgb(163_177_198_/_0.7),-12px_-12px_20px_rgba(255,255,255,0.6)] dark:hover:shadow-[12px_12px_20px_rgb(0_0_0_/_0.5),-12px_-12px_20px_rgba(255,255,255,0.05)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_6px_6px_10px_rgb(163_177_198_/_0.6),inset_-6px_-6px_10px_rgba(255,255,255,0.5)] dark:active:shadow-[inset_6px_6px_10px_rgb(0_0_0_/_0.4),inset_-6px_-6px_10px_rgba(255,255,255,0.05)] cursor-pointer transition-all duration-300 p-4 flex flex-col items-center gap-2"
+        className="group relative bg-[#E0E5EC] dark:bg-[#1a1d23] rounded-[32px] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgb(0_0_0_/_0.4),-9px_-9px_16px_rgba(255,255,255,0.05)] hover:shadow-[12px_12px_20px_rgb(163_177_198_/_0.7),-12px_-12px_20px_rgba(255,255,255,0.6)] dark:hover:shadow-[12px_12px_20px_rgb(0_0_0_/_0.5),-12px_-12px_20px_rgba(255,255,255,0.05)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_6px_6px_10px_rgb(163_177_198_/_0.6),inset_-6px_-6px_10px_rgba(255,255,255,0.5)] dark:active:shadow-[inset_6px_6px_10px_rgb(0_0_0_/_0.4),inset_-6px_-6px_10px_rgba(255,255,255,0.05)] cursor-pointer transition-all duration-300 p-3 sm:p-4 flex flex-col items-center gap-2"
         onContextMenu={handleContextMenu}
         onClick={handleClick}
       >
         {/* Icon / Thumbnail area */}
-        <div className="relative w-20 h-20 shrink-0">
+        <div className="relative w-full aspect-square max-w-[88px] sm:max-w-20 shrink-0">
           {isImage ? (
             <div className="w-full h-full rounded-2xl overflow-hidden shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)]">
               <Thumbnail file={fileItem} />
             </div>
           ) : (
             <div className="w-full h-full rounded-2xl bg-[#E0E5EC] dark:bg-[#1a1d23] shadow-[inset_6px_6px_10px_rgb(163_177_198_/_0.6),inset_-6px_-6px_10px_rgba(255,255,255,0.5)] dark:shadow-[inset_6px_6px_10px_rgb(0_0_0_/_0.4),inset_-6px_-6px_10px_rgba(255,255,255,0.05)] flex items-center justify-center">
-              <Icon className={`w-10 h-10 ${type === 'folder' ? 'text-[#38B2AC]' : 'text-[#6C63FF]'}`} />
+              <Icon className={`w-10 h-10 sm:w-10 sm:h-10 ${type === 'folder' ? 'text-[#38B2AC]' : 'text-[#6C63FF]'}`} />
             </div>
           )}
         </div>
@@ -144,44 +153,53 @@ export function FileItemCard({ item, type, onNavigate, onPreview, onDownload, on
           />
         ) : (
           <div className="w-full text-center min-w-0">
-            <p className="text-xs font-medium text-[#3D4852] dark:text-[#E8ECF1] truncate leading-tight">{item.name}</p>
+            <p className="text-xs sm:text-xs font-medium text-[#3D4852] dark:text-[#E8ECF1] truncate leading-tight">{item.name}</p>
             {isFile && (
-              <p className="text-[10px] text-[#6B7280] dark:text-[#9CA3AF] mt-0.5">
+              <p className="text-[10px] sm:text-[10px] text-[#6B7280] dark:text-[#9CA3AF] mt-0.5">
                 {formatFileSize(fileItem.size)}
               </p>
             )}
           </div>
         )}
 
-        {/* Action buttons — visible on hover */}
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        {/* Action buttons — always visible on mobile, hover reveal on desktop */}
+        <div className="flex items-center justify-center gap-1.5 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200 mt-0.5">
           {isFile && onMove && (
             <button
               onClick={(e) => { e.stopPropagation(); onMove(fileItem) }}
-              className="w-8 h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] transition-all duration-200"
+              className="w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] active:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] transition-all duration-200"
               title="移动"
             >
-              <Move className="w-3.5 h-3.5" />
+              <Move className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
             </button>
           )}
           {isFile && onDownload && (
             <button
               onClick={(e) => { e.stopPropagation(); onDownload(fileItem) }}
-              className="w-8 h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] transition-all duration-200"
+              className="w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] active:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] transition-all duration-200"
               title="下载"
             >
-              <Download className="w-3.5 h-3.5" />
+              <Download className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
             </button>
           )}
           {onDelete && (
             <button
               onClick={(e) => { e.stopPropagation(); onDelete(item.id) }}
-              className="w-8 h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-red-500 hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] transition-all duration-200"
+              className="w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-red-500 hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] active:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] transition-all duration-200"
               title="删除"
             >
-              <Trash2 className="w-3.5 h-3.5" />
+              <Trash2 className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
             </button>
           )}
+          {/* More button — opens context menu */}
+          <button
+            ref={moreRef}
+            onClick={handleOpenMenu}
+            className="w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl text-[#6B7280] hover:text-[#6C63FF] hover:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_3px_3px_6px_rgb(0_0_0_/_0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.05)] active:shadow-[inset_3px_3px_6px_rgb(163_177_198_/_0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] transition-all duration-200"
+            title="更多"
+          >
+            <MoreVertical className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+          </button>
         </div>
       </div>
 

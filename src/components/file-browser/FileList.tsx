@@ -128,9 +128,9 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
 
       {/* Upload button for mobile */}
       <div className="px-3 sm:px-4 lg:px-6 pt-2 sm:hidden">
-        <label className="flex items-center justify-center gap-2 w-full py-3.5 rounded-[16px] bg-[#E0E5EC] dark:bg-[#1a1d23] text-[#6B7280] dark:text-[#9CA3AF] shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_4px_4px_8px_rgb(0_0_0_/_0.4),inset_-4px_-4px_8px_rgba(255,255,255,0.05)] hover:shadow-[inset_6px_6px_10px_rgb(163_177_198_/_0.6),inset_-6px_-6px_10px_rgba(255,255,255,0.5)] dark:hover:shadow-[inset_6px_6px_10px_rgb(0_0_0_/_0.4),inset_-6px_-6px_10px_rgba(255,255,255,0.05)] transition-all duration-200 cursor-pointer">
-          <Upload className="w-5 h-5" />
-          <span className="text-sm font-medium">选择文件上传</span>
+        <label className="flex items-center justify-center gap-2 w-full py-4 rounded-[16px] bg-[#E0E5EC] text-[#6B7280] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] hover:shadow-[inset_4px_4px_8px_rgb(163_177_198_/_0.6),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] active:shadow-[inset_6px_6px_10px_rgb(163_177_198_/_0.6),inset_-6px_-6px_10px_rgba(255,255,255,0.5)] transition-all duration-200 cursor-pointer">
+          <Upload className="w-5 h-5 text-[#6C63FF]" />
+          <span className="text-sm font-medium text-[#3D4852]">选择文件上传</span>
           <input
             type="file"
             multiple
@@ -154,7 +154,7 @@ export function FileList({ currentFolderId, onNavigate }: FileListProps) {
           <EmptyState />
         ) : (
           <div className="bg-[#E0E5EC] dark:bg-[#1a1d23] rounded-[32px] shadow-[9px_9px_16px_rgb(163_177_198_/_0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgb(0_0_0_/_0.4),-9px_-9px_16px_rgba(255,255,255,0.05)] p-4 sm:p-5">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-4">
               {allItems.map((item) => (
                 <FileItemCard
                   key={item.type === 'folder' ? `f-${item.data.id}` : `file-${item.data.id}`}
