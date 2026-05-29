@@ -1,10 +1,15 @@
-// Polyfill for pdfjs-dist v5 — Safari < 18.2 不支持 Promise.withResolvers
+// Polyfills for pdfjs-dist v5 — Safari 旧版本不支持这些较新的 API
 if (!(Promise as any).withResolvers) {
   (Promise as any).withResolvers = function () {
     let resolve: (value: unknown) => void
     let reject: (reason?: unknown) => void
     const promise = new Promise<unknown>((res, rej) => { resolve = res; reject = rej })
     return { promise, resolve: resolve!, reject: reject! }
+  }
+}
+if (!(URL as any).parse) {
+  (URL as any).parse = function (url: string, base?: string) {
+    try { return new URL(url, base) } catch { return null }
   }
 }
 

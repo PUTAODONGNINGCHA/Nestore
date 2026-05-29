@@ -86,11 +86,14 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
           {isText && textContent !== null && <TextPreview content={textContent} />}
           {isOffice && signedUrl && (
             isMobile ? (
-              <div className="text-center py-8">
-                <p className="text-[#635F69] mb-4 font-medium">手机端不支持内联预览</p>
-                <Button variant="primary" onClick={() => window.open(`https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(signedUrl)}`, '_blank')}>
-                  在浏览器中打开
-                </Button>
+              <div className="text-center py-8 space-y-3">
+                <p className="text-[#635F69] text-sm">手机端需要在新标签页中预览</p>
+                <div className="flex justify-center gap-3">
+                  <Button variant="primary" onClick={() => window.open(`https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(signedUrl)}`, '_blank')}>
+                    预览
+                  </Button>
+                  <Button variant="secondary" onClick={handleDownload}>下载</Button>
+                </div>
               </div>
             ) : (
               <iframe

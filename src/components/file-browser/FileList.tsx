@@ -44,21 +44,23 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null)
   const [moveItem, setMoveItem] = useState<{ id: string; name: string; type: 'file' | 'folder' } | null>(null)
   const [orderedItems, setOrderedItems] = useState<Entry[]>([])
+  const [isNavigating, setIsNavigating] = useState(false)
   const prevFolderRef = useRef(currentFolderId)
-  // Clear stale items immediately on folder navigation (prevent visual ghosting)
+  // Track folder navigation to show spinner during transitions (prevent empty-state flash)
   useLayoutEffect(() => {
     if (prevFolderRef.current !== currentFolderId) {
-      setOrderedItems([])
+      setIsNavigating(true)
       prevFolderRef.current = currentFolderId
     }
   }, [currentFolderId])
-  // Sync orderedItems from folders/files
+  // Sync orderedItems from folders/files — also clears navigation state
   useEffect(() => {
     const items: Entry[] = [
       ...folders.map((f) => ({ type: 'folder' as const, data: f })),
       ...files.map((f) => ({ type: 'file' as const, data: f })),
     ]
     setOrderedItems(items)
+    if (isNavigating) setIsNavigating(false)
   }, [folders, files])
 
   const isLoading = filesLoading
@@ -223,7 +225,7 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
 
       {/* File grid with drag-and-drop */}
       <div className="flex-1 overflow-y-auto px-3 sm:px-4 lg:px-6 py-3 scrollbar-thin">
-        {isLoading ? (
+        {isLoading || isNavigating ? (
           <div className="flex items-center justify-center py-16">
             <div className="clay-spinner" />
           </div>
