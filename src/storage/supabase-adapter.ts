@@ -215,7 +215,7 @@ export class SupabaseAdapter implements StorageAdapter {
   }
 
   async getDownloadUrl(storagePath: string): Promise<string> {
-    return this.fetchSignedUrl(storagePath, 60)
+    return this.fetchSignedUrl(storagePath, 3600)
   }
 
   async getFileContents(storagePath: string): Promise<string> {

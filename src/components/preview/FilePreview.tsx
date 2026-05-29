@@ -79,7 +79,7 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
           {isImage && signedUrl && <ImagePreview src={signedUrl} name={file.name} />}
           {isVideo && signedUrl && <VideoPreview src={signedUrl} name={file.name} />}
           {isPdf && signedUrl && (
-            <iframe src={signedUrl} className="w-full h-[70vh] rounded-[24px]" title={file.name} />
+            <embed src={signedUrl} type="application/pdf" className="w-full h-[70vh] rounded-[24px]" title={file.name} />
           )}
           {isText && textContent !== null && <TextPreview content={textContent} />}
           {isOffice && signedUrl && (
