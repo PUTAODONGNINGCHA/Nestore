@@ -16,7 +16,6 @@ export interface StorageAdapter {
 
   // Folders
   getFolders(parentId: string | null): Promise<Folder[]>
-  getAllFolders(): Promise<Folder[]>
   createFolder(name: string, parentId: string | null): Promise<Folder>
   renameFolder(id: string, name: string): Promise<void>
   moveFolder(id: string, targetParentId: string | null): Promise<void>
@@ -97,7 +96,7 @@ adapter = new LocalStorageAdapter()  // 替换 new SupabaseAdapter(...)
 ```tsx
 async getDownloadUrl(storagePath: string): Promise<string> {
   const { data } = await supabase.storage
-    .from('bucket-name')
+    .from('family-files')
     .createSignedUrl(storagePath, 3600)  // 1小时过期
   return data!.signedUrl
 }
@@ -113,14 +112,19 @@ const storagePath = `${folderId || 'root'}/${Date.now()}_${safeName}`
 ### 排序持久化（列可能不存在）
 
 ```tsx
-async updateSortOrder(items) {
-  // 用 try-catch 包裹，兼容无 sort_order 列的表
-  try {
-    for (const item of items) {
-      await supabase.from('files').update({ sort_order: item.sort_order }).eq('id', item.id)
+async updateSortOrder(items: { id: string; sort_order: number; type: 'folder' | 'file' }[]): Promise<void> {
+  const table = (type: 'folder' | 'file') => type === 'folder' ? 'folders' : 'files'
+
+  for (const item of items) {
+    const { error } = await this.client
+      .from(table(item.type))
+      .update({ sort_order: item.sort_order, updated_at: new Date().toISOString() })
+      .eq('id', item.id)
+    if (error) {
+      // sort_order column may not exist yet — ignore
+      if (error.message?.includes('sort_order')) continue
+      throw new Error(`Failed to update sort order: ${error.message}`)
     }
-  } catch {
-    // 列不存在时静默失败
   }
 }
 ```

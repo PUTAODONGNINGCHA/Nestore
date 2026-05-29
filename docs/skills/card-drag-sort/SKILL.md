@@ -8,8 +8,8 @@
 
 ```json
 "@dnd-kit/core": "^6.x",
-"@dnd-kit/sortable": "^8.x",
-"@dnd-kit/utilities": "^8.x"
+"@dnd-kit/sortable": "^10.x",
+"@dnd-kit/utilities": "^3.x"
 ```
 
 ## 核心模式
