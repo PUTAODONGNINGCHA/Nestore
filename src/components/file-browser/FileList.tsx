@@ -252,7 +252,13 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
                       item={item.data}
                       type={item.type}
                       onNavigate={(id) => onNavigate(id)}
-                      onPreview={(file) => { setPreviewFile(file); window.history.pushState({ previewFile: true }, '') }}
+                      onPreview={(file) => {
+                        if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                          getStorageAdapter().getDownloadUrl(file.storage_path).then(url => window.open(url, '_blank'))
+                        } else {
+                          setPreviewFile(file); window.history.pushState({ previewFile: true }, '')
+                        }
+                      }}
                       onDownload={handleDownload}
                       onFolderDownload={handleFolderDownload}
                       onMove={(data) => setMoveItem({ id: data.id, name: data.name, type: item.type })}
