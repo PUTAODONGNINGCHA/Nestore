@@ -7,6 +7,10 @@ dist
 # Claude local config
 .claude/settings.local.json
 
+# Project summaries & AI skill docs (local learning notes, not part of source)
+docs/skills/
+docs/Nestore代码指南.md
+
 # IDE
 .idea/
 .vscode/
