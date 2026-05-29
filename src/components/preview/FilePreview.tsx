@@ -3,6 +3,7 @@ import { Modal } from '@/components/ui/Modal'
 import { ImagePreview } from './ImagePreview'
 import { VideoPreview } from './VideoPreview'
 import { TextPreview } from './TextPreview'
+import { PdfPreview } from './PdfPreview'
 import { Button } from '@/components/ui/Button'
 import { getStorageAdapter } from '@/storage/factory'
 import type { FileItem } from '@/types'
@@ -87,7 +88,7 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
           {isImage && signedUrl && <ImagePreview src={signedUrl} name={file.name} />}
           {isVideo && signedUrl && <VideoPreview src={signedUrl} name={file.name} />}
           {isPdf && blobUrl && (
-            <iframe src={blobUrl} className="w-full h-[70vh] rounded-[24px]" title={file.name} />
+            <PdfPreview blobUrl={blobUrl} />
           )}
           {isText && textContent !== null && <TextPreview content={textContent} />}
           {isOffice && signedUrl && (
