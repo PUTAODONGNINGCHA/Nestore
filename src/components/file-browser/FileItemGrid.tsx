@@ -152,7 +152,7 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
         style={style}
         {...attributes}
         {...listeners}
-        className="group relative bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.15),-8px_-8px_16px_rgba(255,255,255,0.7)] hover:-translate-y-0.5 hover:shadow-[16px_16px_32px_rgba(160,150,180,0.2),-10px_-10px_20px_rgba(255,255,255,0.85)] active:scale-[0.96] cursor-pointer transition-[transform,box-shadow] duration-150 ease-out flex flex-col items-center py-3 sm:py-4 px-3 sm:px-4 touch-none"
+        className="group relative bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.15),-8px_-8px_16px_rgba(255,255,255,0.7)] hover:-translate-y-0.5 hover:shadow-[16px_16px_32px_rgba(160,150,180,0.2),-10px_-10px_20px_rgba(255,255,255,0.85)] active:scale-[0.96] cursor-pointer flex flex-col items-center py-3 sm:py-4 px-3 sm:px-4 touch-none"
         onContextMenu={handleContextMenu}
         onClick={handleClick}
         onTouchStart={handleTouchStart}
