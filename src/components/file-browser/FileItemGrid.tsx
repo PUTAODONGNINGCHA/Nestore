@@ -79,13 +79,12 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
     listeners,
     setNodeRef,
     transform,
-    transition,
     isDragging,
   } = useSortable({ id })
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition: isDragging ? undefined : (transition || 'transform 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94)'),
+    transition: isDragging ? 'none' : 'transform 100ms ease',
     opacity: isDragging ? 0.5 : undefined,
     zIndex: isDragging ? 50 : undefined,
   }
