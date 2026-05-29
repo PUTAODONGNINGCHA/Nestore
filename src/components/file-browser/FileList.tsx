@@ -27,6 +27,7 @@ interface FileListProps {
   currentFolderId: string | null
   onNavigate: (folderId: string | null) => void
   folders: import('@/types').Folder[]
+  foldersLoading: boolean
   onRenameFolder: (id: string, name: string) => Promise<void>
   onRemoveFolder: (id: string) => Promise<void>
   onRefreshFolders: () => Promise<void>
@@ -39,7 +40,7 @@ function getSortId(entry: Entry) {
   return entry.type === 'folder' ? `folder-${entry.data.id}` : `file-${entry.data.id}`
 }
 
-export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder, onRemoveFolder, onRefreshFolders, uploadInputRef }: FileListProps) {
+export function FileList({ currentFolderId, onNavigate, folders, foldersLoading, onRenameFolder, onRemoveFolder, onRefreshFolders, uploadInputRef }: FileListProps) {
   const { files, isLoading: filesLoading, error: filesError, refresh: refreshFiles, rename: renameFile, remove: removeFile } = useFiles(currentFolderId)
   const { crumbs } = useBreadcrumbs(currentFolderId)
   const { isUploading, progress, error: uploadError, uploadMultiple } = useUpload(currentFolderId, () => { refreshFiles(); onRefreshFolders() })
@@ -56,15 +57,23 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
       prevFolderRef.current = currentFolderId
     }
   }, [currentFolderId])
-  // Sync orderedItems from folders/files — also clears navigation state
+  // Sync orderedItems from folders/files
   useEffect(() => {
     const items: Entry[] = [
       ...folders.map((f) => ({ type: 'folder' as const, data: f })),
       ...files.map((f) => ({ type: 'file' as const, data: f })),
     ]
     setOrderedItems(items)
-    if (isNavigating) setIsNavigating(false)
   }, [folders, files])
+
+  // Clear navigation state only when BOTH folders and files have loaded.
+  // Prevents mobile flash where folders arrive before files and isNavigating
+  // was previously cleared prematurely, causing content to render with stale data.
+  useEffect(() => {
+    if (isNavigating && !filesLoading && !foldersLoading) {
+      setIsNavigating(false)
+    }
+  }, [isNavigating, filesLoading, foldersLoading])
 
   // Browser back button closes file preview
   useEffect(() => {
@@ -75,7 +84,7 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
     return () => window.removeEventListener('popstate', handlePopState)
   }, [previewFile])
 
-  const isLoading = filesLoading
+  const isLoading = filesLoading || foldersLoading
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })

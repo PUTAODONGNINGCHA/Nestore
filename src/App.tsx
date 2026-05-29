@@ -10,7 +10,7 @@ import { useFolders } from '@/hooks/useFolders'
 export default function App() {
   const { isAuthenticated, isLoading, error, login, logout } = useAuth()
   const [currentFolderId, setCurrentFolderId] = useState<string | null>(null)
-  const { folders, refresh: refreshFolders, create: createFolder, rename: renameFolder, remove: removeFolder } = useFolders(currentFolderId)
+  const { folders, isLoading: foldersLoading, refresh: refreshFolders, create: createFolder, rename: renameFolder, remove: removeFolder } = useFolders(currentFolderId)
   const uploadInputRef = useRef<HTMLInputElement>(null)
   const [showSearch, setShowSearch] = useState(false)
   const [showNewFolderInput, setShowNewFolderInput] = useState(false)
@@ -111,6 +111,7 @@ export default function App() {
         currentFolderId={currentFolderId}
         onNavigate={handleNavigate}
         folders={folders}
+        foldersLoading={foldersLoading}
         onRenameFolder={renameFolder}
         onRemoveFolder={removeFolder}
         onRefreshFolders={refreshFolders}
