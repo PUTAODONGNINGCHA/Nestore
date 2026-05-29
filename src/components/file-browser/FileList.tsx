@@ -17,6 +17,8 @@ import { useUpload } from '@/hooks/useUpload'
 import { useBreadcrumbs } from '@/hooks/useBreadcrumbs'
 import { FileUploader } from '@/components/upload/FileUploader'
 import { FilePreview } from '@/components/preview/FilePreview'
+import { Modal } from '@/components/ui/Modal'
+import { Button } from '@/components/ui/Button'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { getStorageAdapter } from '@/storage/factory'
 import type { FileItem } from '@/types'
@@ -42,6 +44,7 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
   const { crumbs } = useBreadcrumbs(currentFolderId)
   const { isUploading, progress, error: uploadError, uploadMultiple } = useUpload(currentFolderId, () => { refreshFiles(); onRefreshFolders() })
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null)
+  const [confirmMobileFile, setConfirmMobileFile] = useState<FileItem | null>(null)
   const [moveItem, setMoveItem] = useState<{ id: string; name: string; type: 'file' | 'folder' } | null>(null)
   const [orderedItems, setOrderedItems] = useState<Entry[]>([])
   const [isNavigating, setIsNavigating] = useState(false)
@@ -254,11 +257,7 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
                       onNavigate={(id) => onNavigate(id)}
                       onPreview={(file) => {
                         if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                          // 先打开空白窗口（用户手势），再设置 URL（避免浏览器拦截弹窗）
-                          const win = window.open('', '_blank')
-                          getStorageAdapter().getDownloadUrl(file.storage_path)
-                            .then(url => { if (win) win.location.href = url })
-                            .catch(() => win?.close())
+                          setConfirmMobileFile(file)
                         } else {
                           setPreviewFile(file); window.history.pushState({ previewFile: true }, '')
                         }
@@ -313,6 +312,26 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
           onClose={() => setMoveItem(null)}
           onMove={handleMove}
         />
+      )}
+
+      {/* Mobile preview confirm dialog */}
+      {confirmMobileFile && (
+        <Modal isOpen onClose={() => setConfirmMobileFile(null)} title={confirmMobileFile.name}>
+          <div className="text-center py-6 space-y-6">
+            <p className="text-[#635F69] text-sm">是否在新标签页中打开此文件？</p>
+            <div className="flex justify-center gap-3">
+              <Button variant="secondary" onClick={() => setConfirmMobileFile(null)}>取消</Button>
+              <Button variant="primary" onClick={() => {
+                const file = confirmMobileFile
+                setConfirmMobileFile(null)
+                const win = window.open('', '_blank')
+                getStorageAdapter().getDownloadUrl(file.storage_path)
+                  .then(url => { if (win) win.location.href = url })
+                  .catch(() => win?.close())
+              }}>打开</Button>
+            </div>
+          </div>
+        </Modal>
       )}
     </div>
   )
