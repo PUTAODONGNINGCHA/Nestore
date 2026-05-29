@@ -13,6 +13,8 @@ interface FilePreviewProps {
   onClose: () => void
 }
 
+const OFFICE_VIEWER = (url: string) => `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(url)}`
+
 export function FilePreview({ file, onClose }: FilePreviewProps) {
   const [signedUrl, setSignedUrl] = useState<string | null>(null)
   const [textContent, setTextContent] = useState<string | null>(null)
@@ -81,7 +83,19 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
           {isImage && signedUrl && <ImagePreview src={signedUrl} name={file.name} />}
           {isVideo && signedUrl && <VideoPreview src={signedUrl} name={file.name} />}
           {isPdf && signedUrl && (
-            <PdfPreview url={signedUrl} />
+            isMobile ? (
+              <div className="text-center py-8 space-y-3">
+                <p className="text-[#635F69] text-sm">手机端需要在新标签页中预览</p>
+                <div className="flex justify-center gap-3">
+                  <Button variant="primary" onClick={() => window.open(OFFICE_VIEWER(signedUrl), '_blank')}>
+                    预览
+                  </Button>
+                  <Button variant="secondary" onClick={handleDownload}>下载</Button>
+                </div>
+              </div>
+            ) : (
+              <PdfPreview url={signedUrl} />
+            )
           )}
           {isText && textContent !== null && <TextPreview content={textContent} />}
           {isOffice && signedUrl && (
@@ -89,7 +103,7 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
               <div className="text-center py-8 space-y-3">
                 <p className="text-[#635F69] text-sm">手机端需要在新标签页中预览</p>
                 <div className="flex justify-center gap-3">
-                  <Button variant="primary" onClick={() => window.open(`https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(signedUrl)}`, '_blank')}>
+                  <Button variant="primary" onClick={() => window.open(OFFICE_VIEWER(signedUrl), '_blank')}>
                     预览
                   </Button>
                   <Button variant="secondary" onClick={handleDownload}>下载</Button>
@@ -97,7 +111,7 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
               </div>
             ) : (
               <iframe
-                src={`https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(signedUrl)}`}
+                src={OFFICE_VIEWER(signedUrl)}
                 className="w-full h-[70vh] rounded-[24px]"
                 title={file.name}
               />
