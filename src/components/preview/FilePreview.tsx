@@ -18,6 +18,7 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
   const [textContent, setTextContent] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0
 
   const isText = file.mime_type.startsWith('text/')
   const isImage = file.mime_type.startsWith('image/')
@@ -84,11 +85,20 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
           )}
           {isText && textContent !== null && <TextPreview content={textContent} />}
           {isOffice && signedUrl && (
-            <iframe
-              src={`https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(signedUrl)}`}
-              className="w-full h-[70vh] rounded-[24px]"
-              title={file.name}
-            />
+            isMobile ? (
+              <div className="text-center py-8">
+                <p className="text-[#635F69] mb-4 font-medium">手机端不支持内联预览</p>
+                <Button variant="primary" onClick={() => window.open(`https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(signedUrl)}`, '_blank')}>
+                  在浏览器中打开
+                </Button>
+              </div>
+            ) : (
+              <iframe
+                src={`https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(signedUrl)}`}
+                className="w-full h-[70vh] rounded-[24px]"
+                title={file.name}
+              />
+            )
           )}
           {isOffice && !signedUrl && (
             <div className="text-center py-16">

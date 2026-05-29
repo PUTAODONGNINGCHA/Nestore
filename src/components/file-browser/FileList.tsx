@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useLayoutEffect, useCallback, useRef } from 'react'
 import {
   DndContext,
   PointerSensor,
@@ -44,6 +44,14 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null)
   const [moveItem, setMoveItem] = useState<{ id: string; name: string; type: 'file' | 'folder' } | null>(null)
   const [orderedItems, setOrderedItems] = useState<Entry[]>([])
+  const prevFolderRef = useRef(currentFolderId)
+  // Clear stale items immediately on folder navigation (prevent visual ghosting)
+  useLayoutEffect(() => {
+    if (prevFolderRef.current !== currentFolderId) {
+      setOrderedItems([])
+      prevFolderRef.current = currentFolderId
+    }
+  }, [currentFolderId])
   // Sync orderedItems from folders/files
   useEffect(() => {
     const items: Entry[] = [
