@@ -84,7 +84,6 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition: isDragging ? 'none' : 'transform 100ms ease',
     opacity: isDragging ? 0.5 : undefined,
     zIndex: isDragging ? 50 : undefined,
   }
