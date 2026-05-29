@@ -20,7 +20,7 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
   const [textContent, setTextContent] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+  const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
 
   const isText = file.mime_type.startsWith('text/')
   const isImage = file.mime_type.startsWith('image/')
