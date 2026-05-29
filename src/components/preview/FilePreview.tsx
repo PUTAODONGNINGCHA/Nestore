@@ -67,6 +67,19 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
     }
   }
 
+  const handleMobilePdfPreview = async () => {
+    if (!signedUrl) return
+    try {
+      const resp = await fetch(signedUrl)
+      const blob = await resp.blob()
+      const blobUrl = URL.createObjectURL(blob)
+      window.open(blobUrl, '_blank')
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 60000)
+    } catch {
+      handleDownload()
+    }
+  }
+
   return (
     <Modal isOpen onClose={onClose} title={file.name}>
       {isLoading ? (
@@ -85,9 +98,9 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
           {isPdf && signedUrl && (
             isMobile ? (
               <div className="text-center py-8 space-y-3">
-                <p className="text-[#635F69] text-sm">手机端需要在新标签页中预览</p>
+                <p className="text-[#635F69] text-sm">正在打开本地预览...</p>
                 <div className="flex justify-center gap-3">
-                  <Button variant="primary" onClick={() => window.open(OFFICE_VIEWER(signedUrl), '_blank')}>
+                  <Button variant="primary" onClick={handleMobilePdfPreview}>
                     预览
                   </Button>
                   <Button variant="secondary" onClick={handleDownload}>下载</Button>
