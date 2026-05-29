@@ -22,6 +22,7 @@ interface FileItemCardProps {
   onNavigate?: (folderId: string) => void
   onPreview?: (file: FileItemType) => void
   onDownload?: (file: FileItemType) => void
+  onFolderDownload?: (folder: FolderType) => void
   onMove?: (item: FileItemType | FolderType) => void
   onRename?: (id: string, name: string) => void
   onDelete?: (id: string) => void
@@ -66,7 +67,7 @@ function Thumbnail({ file }: { file: FileItemType }) {
   return null
 }
 
-export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload, onMove, onRename, onDelete }: FileItemCardProps) {
+export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload, onFolderDownload, onMove, onRename, onDelete }: FileItemCardProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuPos, setMenuPos] = useState({ x: 0, y: 0 })
   const [isRenaming, setIsRenaming] = useState(false)
@@ -152,7 +153,7 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
         style={style}
         {...attributes}
         {...listeners}
-        className="group relative bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.15),-8px_-8px_16px_rgba(255,255,255,0.7)] hover:-translate-y-0.5 hover:shadow-[16px_16px_32px_rgba(160,150,180,0.2),-10px_-10px_20px_rgba(255,255,255,0.85)] active:scale-[0.96] cursor-pointer flex flex-col items-center py-3 sm:py-4 px-3 sm:px-4 touch-none"
+        className="group relative bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.15),-8px_-8px_16px_rgba(255,255,255,0.7)] hover:-translate-y-0.5 hover:shadow-[16px_16px_32px_rgba(160,150,180,0.2),-10px_-10px_20px_rgba(255,255,255,0.85)] active:scale-[0.96] cursor-pointer select-none flex flex-col items-center py-3 sm:py-4 px-3 sm:px-4 touch-none"
         onContextMenu={handleContextMenu}
         onClick={handleClick}
         onTouchStart={handleTouchStart}
@@ -202,6 +203,11 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
         {type === 'folder' && onNavigate && (
           <ContextMenuItem onClick={() => { setMenuOpen(false); onNavigate(item.id) }}>
             打开
+          </ContextMenuItem>
+        )}
+        {type === 'folder' && onFolderDownload && (
+          <ContextMenuItem onClick={() => { setMenuOpen(false); onFolderDownload(item as import('@/types').Folder) }}>
+            下载
           </ContextMenuItem>
         )}
         {isFile && onPreview && (

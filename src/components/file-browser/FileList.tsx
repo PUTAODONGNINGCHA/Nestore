@@ -7,6 +7,7 @@ import {
   type DragEndEvent,
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
+import JSZip from 'jszip'
 import { FileItemCard } from './FileItemGrid'
 import { Breadcrumb } from './Breadcrumb'
 import { EmptyState } from './EmptyState'
@@ -112,6 +113,43 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
     }
   }
 
+  const handleFolderDownload = async (folder: import('@/types').Folder) => {
+    try {
+      const allFolders = await getStorageAdapter().getAllFolders()
+      const allFiles = await getStorageAdapter().getFiles(folder.id)
+
+      // Collect nested files
+      const subFolders = allFolders.filter((f) => f.parent_id === folder.id)
+      const allFolderFiles = [...allFiles]
+      for (const sub of subFolders) {
+        const subFiles = await getStorageAdapter().getFiles(sub.id)
+        allFolderFiles.push(...subFiles)
+      }
+
+      const zip = new JSZip()
+      for (const f of allFolderFiles) {
+        try {
+          const url = await getStorageAdapter().getDownloadUrl(f.storage_path)
+          const resp = await fetch(url)
+          const blob = await resp.blob()
+          zip.file(f.name, blob)
+        } catch { /* skip failed files */ }
+      }
+
+      const zipBlob = await zip.generateAsync({ type: 'blob' })
+      const blobUrl = URL.createObjectURL(zipBlob)
+      const a = document.createElement('a')
+      a.href = blobUrl
+      a.download = `${folder.name}.zip`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(blobUrl)
+    } catch {
+      alert('下载文件夹失败')
+    }
+  }
+
   const handleMove = async (targetFolderId: string | null) => {
     if (!moveItem) return
     if (moveItem.type === 'folder') {
@@ -197,6 +235,7 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
                       onNavigate={(id) => onNavigate(id)}
                       onPreview={(file) => setPreviewFile(file)}
                       onDownload={handleDownload}
+                      onFolderDownload={handleFolderDownload}
                       onMove={(data) => setMoveItem({ id: data.id, name: data.name, type: item.type })}
                       onRename={(id, name) => {
                         const exists = item.type === 'folder'

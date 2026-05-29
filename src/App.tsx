@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from 'react'
-import { FolderPlus, Upload } from 'lucide-react'
+import { FolderPlus, Upload, Search } from 'lucide-react'
+import { SearchDialog } from '@/components/file-browser/SearchDialog'
 import { LoginPage } from '@/components/auth/LoginPage'
 import { MainLayout } from '@/components/layout/MainLayout'
 import { FileList } from '@/components/file-browser/FileList'
@@ -11,6 +12,7 @@ export default function App() {
   const [currentFolderId, setCurrentFolderId] = useState<string | null>(null)
   const { folders, refresh: refreshFolders, create: createFolder, rename: renameFolder, remove: removeFolder } = useFolders(currentFolderId)
   const uploadInputRef = useRef<HTMLInputElement>(null)
+  const [showSearch, setShowSearch] = useState(false)
   const [showNewFolderInput, setShowNewFolderInput] = useState(false)
   const [newFolderName, setNewFolderName] = useState('')
 
@@ -44,6 +46,14 @@ export default function App() {
       onLogout={logout}
       headerRight={
         <div className="flex items-center gap-2">
+          {/* Search button */}
+          <button
+            onClick={() => setShowSearch(true)}
+            className="w-10 h-10 flex items-center justify-center rounded-[20px] bg-white text-[#635F69] shadow-[8px_8px_16px_rgba(160,150,180,0.15),-4px_-4px_12px_rgba(255,255,255,0.8)] hover:-translate-y-0.5 hover:shadow-[12px_12px_24px_rgba(160,150,180,0.2),-6px_-6px_16px_rgba(255,255,255,0.9)] active:scale-[0.92] active:shadow-[inset_6px_6px_12px_#d9d4e3,inset_-6px_-6px_12px_#ffffff] transition-all duration-200 clay-bounce cursor-pointer"
+            title="搜索"
+          >
+            <Search className="w-5 h-5" />
+          </button>
           {/* Upload button */}
           <button
             onClick={() => uploadInputRef.current?.click()}
@@ -90,6 +100,12 @@ export default function App() {
         onRemoveFolder={removeFolder}
         onRefreshFolders={refreshFolders}
         uploadInputRef={uploadInputRef}
+      />
+      <SearchDialog
+        isOpen={showSearch}
+        onClose={() => setShowSearch(false)}
+        onNavigate={setCurrentFolderId}
+        onPreview={() => {}}
       />
     </MainLayout>
   )

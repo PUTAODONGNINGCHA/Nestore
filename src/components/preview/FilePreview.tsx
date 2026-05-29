@@ -14,6 +14,7 @@ interface FilePreviewProps {
 
 export function FilePreview({ file, onClose }: FilePreviewProps) {
   const [signedUrl, setSignedUrl] = useState<string | null>(null)
+  const [blobUrl, setBlobUrl] = useState<string | null>(null)
   const [textContent, setTextContent] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -35,14 +36,21 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
         } else {
           const url = await getStorageAdapter().getDownloadUrl(file.storage_path)
           setSignedUrl(url)
+          // For PDF, download as blob for reliable mobile preview
+          if (isPdf) {
+            const resp = await fetch(url)
+            const blob = await resp.blob()
+            setBlobUrl(URL.createObjectURL(blob))
+          }
         }
-      } catch (err) {
+      } catch {
         setError('加载文件失败')
       } finally {
         setIsLoading(false)
       }
     }
     load()
+    return () => { if (blobUrl) URL.revokeObjectURL(blobUrl) }
   }, [file.storage_path, isText])
 
   const handleDownload = async () => {
@@ -50,14 +58,14 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
       const url = await getStorageAdapter().getDownloadUrl(file.storage_path)
       const response = await fetch(url)
       const blob = await response.blob()
-      const blobUrl = URL.createObjectURL(blob)
+      const blobUrlLocal = URL.createObjectURL(blob)
       const a = document.createElement('a')
-      a.href = blobUrl
+      a.href = blobUrlLocal
       a.download = file.name
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
-      URL.revokeObjectURL(blobUrl)
+      URL.revokeObjectURL(blobUrlLocal)
     } catch {
       alert('下载失败')
     }
@@ -71,15 +79,15 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
         </div>
       ) : error ? (
         <div className="text-center py-16">
-          <p className="text-red-500 dark:text-red-400 mb-4 font-medium">{error}</p>
+          <p className="text-red-500 mb-4 font-medium">{error}</p>
           <Button variant="primary" onClick={handleDownload}>下载文件</Button>
         </div>
       ) : (
         <>
           {isImage && signedUrl && <ImagePreview src={signedUrl} name={file.name} />}
           {isVideo && signedUrl && <VideoPreview src={signedUrl} name={file.name} />}
-          {isPdf && signedUrl && (
-            <embed src={signedUrl} type="application/pdf" className="w-full h-[70vh] rounded-[24px]" title={file.name} />
+          {isPdf && blobUrl && (
+            <embed src={blobUrl} type="application/pdf" className="w-full h-[70vh] rounded-[24px]" title={file.name} />
           )}
           {isText && textContent !== null && <TextPreview content={textContent} />}
           {isOffice && signedUrl && (
@@ -88,6 +96,12 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
               className="w-full h-[70vh] rounded-[24px]"
               title={file.name}
             />
+          )}
+          {isOffice && !signedUrl && (
+            <div className="text-center py-16">
+              <p className="text-[#635F69] mb-4 font-medium">预览加载失败，请下载后用本地应用打开</p>
+              <Button variant="primary" onClick={handleDownload}>下载文件</Button>
+            </div>
           )}
           {!isImage && !isVideo && !isPdf && !isText && !isOffice && (
             <div className="text-center py-16">
