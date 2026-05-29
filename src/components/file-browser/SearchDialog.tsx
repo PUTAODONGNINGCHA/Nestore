@@ -7,53 +7,70 @@ interface SearchDialogProps {
   isOpen: boolean
   onClose: () => void
   onNavigate: (folderId: string | null) => void
-  onPreview: (file: FileItem) => void
 }
 
-type Result = { type: 'folder'; data: FolderType } | { type: 'file'; data: FileItem }
+type Result = { type: 'folder'; data: FolderType; parentName: string } | { type: 'file'; data: FileItem; parentName: string }
 
-export function SearchDialog({ isOpen, onClose, onNavigate, onPreview }: SearchDialogProps) {
+export function SearchDialog({ isOpen, onClose, onNavigate }: SearchDialogProps) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<Result[]>([])
   const [isSearching, setIsSearching] = useState(false)
+  const [allFolders, setAllFolders] = useState<FolderType[]>([])
+  const [allFiles, setAllFiles] = useState<FileItem[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // Load all data once when dialog opens
   useEffect(() => {
     if (isOpen) {
       setQuery('')
       setResults([])
+      Promise.all([
+        getStorageAdapter().getAllFolders(),
+        getStorageAdapter().getAllFiles(),
+      ]).then(([folders, files]) => {
+        setAllFolders(folders)
+        setAllFiles(files)
+      }).catch(() => {})
       setTimeout(() => inputRef.current?.focus(), 100)
     }
   }, [isOpen])
 
+  // Filter results based on query
   useEffect(() => {
     if (!query.trim()) { setResults([]); return }
     const q = query.toLowerCase()
     setIsSearching(true)
-    const timer = setTimeout(async () => {
-      try {
-        const [allFolders, allFiles] = await Promise.all([
-          getStorageAdapter().getAllFolders(),
-          getStorageAdapter().getFiles(null),
-        ])
-        const folderResults: Result[] = allFolders
-          .filter((f) => f.name.toLowerCase().includes(q))
-          .map((f) => ({ type: 'folder' as const, data: f }))
-        const fileResults: Result[] = allFiles
-          .filter((f) => f.name.toLowerCase().includes(q))
-          .map((f) => ({ type: 'file' as const, data: f }))
-        setResults([...folderResults, ...fileResults].slice(0, 50))
-      } catch {} finally { setIsSearching(false) }
-    }, 300)
-    return () => clearTimeout(timer)
-  }, [query])
+
+    const folderMap = new Map(allFolders.map((f) => [f.id, f.name]))
+
+    const matched: Result[] = [
+      ...allFolders
+        .filter((f) => f.name.toLowerCase().includes(q))
+        .map((f) => ({
+          type: 'folder' as const,
+          data: f,
+          parentName: f.parent_id ? folderMap.get(f.parent_id) || '...' : '全部文件',
+        })),
+      ...allFiles
+        .filter((f) => f.name.toLowerCase().includes(q))
+        .map((f) => ({
+          type: 'file' as const,
+          data: f,
+          parentName: f.folder_id ? folderMap.get(f.folder_id) || '...' : '全部文件',
+        })),
+    ]
+    setResults(matched.slice(0, 50))
+    setIsSearching(false)
+  }, [query, allFolders, allFiles])
 
   const handleSelect = (result: Result) => {
     onClose()
     if (result.type === 'folder') {
-      onNavigate(result.data.id)
+      // Navigate to the folder's parent to show it in context
+      onNavigate(result.data.parent_id)
     } else {
-      onPreview(result.data)
+      // Navigate to the file's folder to show it in context
+      onNavigate(result.data.folder_id)
     }
   }
 
@@ -78,12 +95,7 @@ export function SearchDialog({ isOpen, onClose, onNavigate, onPreview }: SearchD
           <button onClick={onClose} className="text-sm text-[#635F69] hover:text-[#7C3AED] font-bold">取消</button>
         </div>
         <div className="max-h-72 overflow-y-auto scrollbar-thin">
-          {isSearching && (
-            <div className="flex items-center justify-center py-8">
-              <div className="clay-spinner !w-5 !h-5 !border-2" />
-            </div>
-          )}
-          {!isSearching && results.length === 0 && query.trim() && (
+          {results.length === 0 && query.trim() && !isSearching && (
             <p className="text-center py-8 text-sm text-[#635F69]">未找到匹配的结果</p>
           )}
           {results.map((r) => (
@@ -100,7 +112,7 @@ export function SearchDialog({ isOpen, onClose, onNavigate, onPreview }: SearchD
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-bold text-[#332F3A] truncate">{r.data.name}</p>
-                <p className="text-xs text-[#635F69]">{r.type === 'folder' ? '文件夹' : '文件'}</p>
+                <p className="text-xs text-[#635F69]">{r.parentName}</p>
               </div>
             </button>
           ))}

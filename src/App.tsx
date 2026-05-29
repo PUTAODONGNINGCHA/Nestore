@@ -105,7 +105,6 @@ export default function App() {
         isOpen={showSearch}
         onClose={() => setShowSearch(false)}
         onNavigate={setCurrentFolderId}
-        onPreview={() => {}}
       />
     </MainLayout>
   )

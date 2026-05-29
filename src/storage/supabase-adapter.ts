@@ -122,6 +122,17 @@ export class SupabaseAdapter implements StorageAdapter {
   }
 
   // Files
+  async getAllFiles(): Promise<FileItem[]> {
+    const ownerId = await this.ensureOwnerId()
+    const { data, error } = await this.client
+      .from('files')
+      .select('*')
+      .eq('owner_id', ownerId)
+      .order('name')
+    if (error) throw new Error(`Failed to fetch all files: ${error.message}`)
+    return data as FileItem[]
+  }
+
   async getFiles(folderId: string | null): Promise<FileItem[]> {
     const ownerId = await this.ensureOwnerId()
     const query = this.client

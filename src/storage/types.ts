@@ -15,6 +15,7 @@ export interface StorageAdapter {
 
   // Files
   getFiles(folderId: string | null): Promise<FileItem[]>
+  getAllFiles(): Promise<FileItem[]>
   uploadFile(file: File, folderId: string | null, onProgress?: (pct: number) => void): Promise<FileItem>
   renameFile(id: string, name: string): Promise<void>
   moveFile(id: string, targetFolderId: string | null): Promise<void>
