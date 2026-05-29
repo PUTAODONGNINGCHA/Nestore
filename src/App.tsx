@@ -20,8 +20,7 @@ export default function App() {
   useEffect(() => {
     window.history.replaceState({ folderId: null }, '')
     const handlePopState = (e: PopStateEvent) => {
-      const fid = e.state?.folderId ?? null
-      if (fid !== currentFolderId) setCurrentFolderId(fid)
+      setCurrentFolderId(e.state?.folderId ?? null)
     }
     window.addEventListener('popstate', handlePopState)
     return () => window.removeEventListener('popstate', handlePopState)
