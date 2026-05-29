@@ -7,8 +7,6 @@ import {
   Archive,
   File,
   FolderIcon,
-  Download,
-  MoreVertical,
 } from 'lucide-react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -74,7 +72,7 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
   const [isRenaming, setIsRenaming] = useState(false)
   const [newName, setNewName] = useState(item.name)
   const inputRef = useRef<HTMLInputElement>(null)
-  const moreRef = useRef<HTMLButtonElement>(null)
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const {
     attributes,
@@ -97,18 +95,15 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
   const fileItem = item as FileItemType
   const isImage = isFile && fileItem.mime_type.startsWith('image/')
 
-  const handleContextMenu = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setMenuPos({ x: e.clientX, y: e.clientY })
+  const showMenu = (x: number, y: number) => {
+    setMenuPos({ x, y })
     setMenuOpen(true)
   }
 
-  const handleOpenMenu = (e: React.MouseEvent) => {
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault()
     e.stopPropagation()
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
-    setMenuPos({ x: rect.left, y: rect.bottom + 4 })
-    setMenuOpen(true)
+    showMenu(e.clientX, e.clientY)
   }
 
   const handleClick = () => {
@@ -117,6 +112,25 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
     } else if (isFile) {
       onPreview?.(fileItem)
     }
+  }
+
+  // Long press for mobile context menu
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0]
+    if (!touch) return
+    const x = touch.clientX
+    const y = touch.clientY
+    longPressTimer.current = setTimeout(() => {
+      showMenu(x, y)
+    }, 500)
+  }
+
+  const handleTouchEnd = () => {
+    if (longPressTimer.current) clearTimeout(longPressTimer.current)
+  }
+
+  const handleTouchMove = () => {
+    if (longPressTimer.current) clearTimeout(longPressTimer.current)
   }
 
   const handleRename = () => {
@@ -140,9 +154,12 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
         style={style}
         {...attributes}
         {...listeners}
-        className="group relative bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.15),-8px_-8px_16px_rgba(255,255,255,0.7)] hover:-translate-y-1 hover:shadow-[18px_18px_36px_rgba(160,150,180,0.2),-12px_-12px_24px_rgba(255,255,255,0.85)] active:scale-[0.92] active:shadow-[inset_8px_8px_16px_#d9d4e3,inset_-8px_-8px_16px_#ffffff] cursor-pointer transition-transform duration-200 clay-bounce flex flex-col items-center py-3 sm:py-4 px-3 sm:px-4 touch-none"
+        className="group relative bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.15),-8px_-8px_16px_rgba(255,255,255,0.7)] hover:-translate-y-0.5 hover:shadow-[16px_16px_32px_rgba(160,150,180,0.2),-10px_-10px_20px_rgba(255,255,255,0.85)] active:scale-[0.96] cursor-pointer transition-transform duration-150 clay-bounce flex flex-col items-center py-3 sm:py-4 px-3 sm:px-4 touch-none"
         onContextMenu={handleContextMenu}
         onClick={handleClick}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchMove}
       >
         {/* Icon */}
         <div className="relative w-full aspect-square max-w-[80px] sm:max-w-20 shrink-0">
@@ -181,27 +198,6 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
             )}
           </div>
         )}
-
-        {/* ↓ ⋮ — bottom-right, horizontal */}
-        <div className="absolute right-3 sm:right-4 bottom-3 sm:bottom-4 flex-row items-center gap-1 flex sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
-          {isFile && onDownload && (
-            <button
-              onClick={(e) => { e.stopPropagation(); onDownload(fileItem) }}
-              className="w-9 h-9 flex items-center justify-center rounded-[16px] bg-white text-[#635F69] shadow-[4px_4px_8px_rgba(160,150,180,0.15),-4px_-4px_8px_rgba(255,255,255,0.8)] hover:text-[#7C3AED] hover:shadow-[6px_6px_12px_rgba(160,150,180,0.2),-6px_-6px_12px_rgba(255,255,255,0.9)] active:scale-[0.92] transition-all duration-200 cursor-pointer"
-              title="下载"
-            >
-              <Download className="w-4 h-4" />
-            </button>
-          )}
-          <button
-            ref={moreRef}
-            onClick={(e) => { e.stopPropagation(); handleOpenMenu(e) }}
-            className="w-9 h-9 flex items-center justify-center rounded-[16px] bg-white text-[#635F69] shadow-[4px_4px_8px_rgba(160,150,180,0.15),-4px_-4px_8px_rgba(255,255,255,0.8)] hover:text-[#7C3AED] hover:shadow-[6px_6px_12px_rgba(160,150,180,0.2),-6px_-6px_12px_rgba(255,255,255,0.9)] active:scale-[0.92] transition-all duration-200 cursor-pointer"
-            title="更多"
-          >
-            <MoreVertical className="w-4 h-4" />
-          </button>
-        </div>
       </div>
 
       <ContextMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} position={menuPos}>
