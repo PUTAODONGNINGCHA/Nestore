@@ -320,7 +320,6 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
           <div className="text-center py-6 space-y-6">
             <p className="text-[#635F69] text-sm">是否在新标签页中打开此文件？</p>
             <div className="flex justify-center gap-3">
-              <Button variant="secondary" onClick={() => setConfirmMobileFile(null)}>取消</Button>
               <Button variant="primary" onClick={() => {
                 const file = confirmMobileFile
                 setConfirmMobileFile(null)
@@ -329,6 +328,7 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
                   .then(url => { if (win) win.location.href = url })
                   .catch(() => win?.close())
               }}>打开</Button>
+              <Button variant="secondary" onClick={() => setConfirmMobileFile(null)}>取消</Button>
             </div>
           </div>
         </Modal>
