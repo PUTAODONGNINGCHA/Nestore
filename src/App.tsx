@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { FolderPlus, Upload, Search } from 'lucide-react'
 import { SearchDialog } from '@/components/file-browser/SearchDialog'
 import { LoginPage } from '@/components/auth/LoginPage'
@@ -15,6 +15,22 @@ export default function App() {
   const [showSearch, setShowSearch] = useState(false)
   const [showNewFolderInput, setShowNewFolderInput] = useState(false)
   const [newFolderName, setNewFolderName] = useState('')
+
+  // Browser back/forward for folder navigation
+  useEffect(() => {
+    window.history.replaceState({ folderId: null }, '')
+    const handlePopState = (e: PopStateEvent) => {
+      const fid = e.state?.folderId ?? null
+      if (fid !== currentFolderId) setCurrentFolderId(fid)
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  const handleNavigate = useCallback((folderId: string | null) => {
+    setCurrentFolderId(folderId)
+    window.history.pushState({ folderId }, '')
+  }, [])
 
   const handleCreateFolder = useCallback(async () => {
     const name = newFolderName.trim()
@@ -94,7 +110,7 @@ export default function App() {
     >
       <FileList
         currentFolderId={currentFolderId}
-        onNavigate={setCurrentFolderId}
+        onNavigate={handleNavigate}
         folders={folders}
         onRenameFolder={renameFolder}
         onRemoveFolder={removeFolder}
@@ -104,7 +120,7 @@ export default function App() {
       <SearchDialog
         isOpen={showSearch}
         onClose={() => setShowSearch(false)}
-        onNavigate={setCurrentFolderId}
+        onNavigate={handleNavigate}
       />
     </MainLayout>
   )

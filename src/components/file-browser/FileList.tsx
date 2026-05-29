@@ -63,6 +63,15 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
     if (isNavigating) setIsNavigating(false)
   }, [folders, files])
 
+  // Browser back button closes file preview
+  useEffect(() => {
+    const handlePopState = () => {
+      if (previewFile) setPreviewFile(null)
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [previewFile])
+
   const isLoading = filesLoading
 
   const sensors = useSensors(
@@ -243,7 +252,7 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
                       item={item.data}
                       type={item.type}
                       onNavigate={(id) => onNavigate(id)}
-                      onPreview={(file) => setPreviewFile(file)}
+                      onPreview={(file) => { setPreviewFile(file); window.history.pushState({ previewFile: true }, '') }}
                       onDownload={handleDownload}
                       onFolderDownload={handleFolderDownload}
                       onMove={(data) => setMoveItem({ id: data.id, name: data.name, type: item.type })}
