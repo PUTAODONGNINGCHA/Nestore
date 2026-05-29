@@ -40,8 +40,8 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
         } else {
           const url = await getStorageAdapter().getDownloadUrl(file.storage_path)
           setSignedUrl(url)
-          // For PDF, pre-fetch as ArrayBuffer for fast pdf.js loading
-          if (isPdf) {
+          // Desktop: pre-fetch PDF as ArrayBuffer for pdf.js inline rendering
+          if (isPdf && !isMobile) {
             const resp = await fetch(url)
             setPdfData(await resp.arrayBuffer())
           }
@@ -53,7 +53,7 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
       }
     }
     load()
-  }, [file.storage_path, isText, isPdf])
+  }, [file.storage_path, isText, isPdf, isMobile])
 
   const handleDownload = async () => {
     try {
@@ -88,8 +88,20 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
         <>
           {isImage && signedUrl && <ImagePreview src={signedUrl} name={file.name} />}
           {isVideo && signedUrl && <VideoPreview src={signedUrl} name={file.name} />}
-          {isPdf && pdfData && (
-            <PdfPreview data={pdfData} />
+          {isPdf && signedUrl && (
+            isMobile ? (
+              <div className="text-center py-8 space-y-3">
+                <p className="text-[#635F69] text-sm">即将在新标签页中打开 PDF</p>
+                <div className="flex justify-center gap-3">
+                  <Button variant="primary" onClick={() => window.open(signedUrl, '_blank')}>
+                    预览
+                  </Button>
+                  <Button variant="secondary" onClick={handleDownload}>下载</Button>
+                </div>
+              </div>
+            ) : (
+              pdfData && <PdfPreview data={pdfData} />
+            )
           )}
           {isText && textContent !== null && <TextPreview content={textContent} />}
           {isOffice && signedUrl && (
