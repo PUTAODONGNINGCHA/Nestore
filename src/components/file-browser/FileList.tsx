@@ -254,7 +254,11 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
                       onNavigate={(id) => onNavigate(id)}
                       onPreview={(file) => {
                         if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                          getStorageAdapter().getDownloadUrl(file.storage_path).then(url => window.open(url, '_blank'))
+                          // 先打开空白窗口（用户手势），再设置 URL（避免浏览器拦截弹窗）
+                          const win = window.open('', '_blank')
+                          getStorageAdapter().getDownloadUrl(file.storage_path)
+                            .then(url => { if (win) win.location.href = url })
+                            .catch(() => win?.close())
                         } else {
                           setPreviewFile(file); window.history.pushState({ previewFile: true }, '')
                         }
