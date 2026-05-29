@@ -41,7 +41,7 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
   const { crumbs } = useBreadcrumbs(currentFolderId)
   const { isUploading, progress, error: uploadError, uploadMultiple } = useUpload(currentFolderId, () => { refreshFiles(); onRefreshFolders() })
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null)
-  const [moveFile, setMoveFile] = useState<FileItem | null>(null)
+  const [moveItem, setMoveItem] = useState<{ id: string; name: string; type: 'file' | 'folder' } | null>(null)
   const [orderedItems, setOrderedItems] = useState<Entry[]>([])
   // Sync orderedItems from folders/files
   useEffect(() => {
@@ -113,10 +113,15 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
   }
 
   const handleMove = async (targetFolderId: string | null) => {
-    if (!moveFile) return
-    await getStorageAdapter().moveFile(moveFile.id, targetFolderId)
-    setMoveFile(null)
-    refreshFiles()
+    if (!moveItem) return
+    if (moveItem.type === 'folder') {
+      await getStorageAdapter().moveFolder(moveItem.id, targetFolderId)
+      onRefreshFolders()
+    } else {
+      await getStorageAdapter().moveFile(moveItem.id, targetFolderId)
+      refreshFiles()
+    }
+    setMoveItem(null)
   }
 
   const handleDrop = async (acceptedFiles: File[]) => {
@@ -192,7 +197,7 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
                       onNavigate={(id) => onNavigate(id)}
                       onPreview={(file) => setPreviewFile(file)}
                       onDownload={handleDownload}
-                      onMove={(file) => setMoveFile(file)}
+                      onMove={(data) => setMoveItem({ id: data.id, name: data.name, type: item.type })}
                       onRename={(id, name) => {
                         const exists = item.type === 'folder'
                           ? folders.some((f) => f.id !== id && f.name === name)
@@ -234,10 +239,10 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
       )}
 
       {/* Move dialog */}
-      {moveFile && (
+      {moveItem && (
         <MoveFileDialog
-          isOpen={!!moveFile}
-          onClose={() => setMoveFile(null)}
+          isOpen={!!moveItem}
+          onClose={() => setMoveItem(null)}
           onMove={handleMove}
         />
       )}

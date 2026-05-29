@@ -10,6 +10,7 @@ export interface StorageAdapter {
   getFolders(parentId: string | null): Promise<Folder[]>
   createFolder(name: string, parentId: string | null): Promise<Folder>
   renameFolder(id: string, name: string): Promise<void>
+  moveFolder(id: string, targetParentId: string | null): Promise<void>
   deleteFolder(id: string): Promise<void>
 
   // Files

@@ -105,6 +105,14 @@ export class SupabaseAdapter implements StorageAdapter {
     if (error) throw new Error(`Failed to rename folder: ${error.message}`)
   }
 
+  async moveFolder(id: string, targetParentId: string | null): Promise<void> {
+    const { error } = await this.client
+      .from('folders')
+      .update({ parent_id: targetParentId, updated_at: new Date().toISOString() })
+      .eq('id', id)
+    if (error) throw new Error(`Failed to move folder: ${error.message}`)
+  }
+
   async deleteFolder(id: string): Promise<void> {
     const { error } = await this.client
       .from('folders')

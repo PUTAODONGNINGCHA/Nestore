@@ -22,7 +22,7 @@ interface FileItemCardProps {
   onNavigate?: (folderId: string) => void
   onPreview?: (file: FileItemType) => void
   onDownload?: (file: FileItemType) => void
-  onMove?: (file: FileItemType) => void
+  onMove?: (item: FileItemType | FolderType) => void
   onRename?: (id: string, name: string) => void
   onDelete?: (id: string) => void
 }
@@ -216,8 +216,8 @@ export function FileItemCard({ id, item, type, onNavigate, onPreview, onDownload
             下载
           </ContextMenuItem>
         )}
-        {isFile && onMove && (
-          <ContextMenuItem onClick={() => { setMenuOpen(false); onMove(fileItem) }}>
+        {onMove && (
+          <ContextMenuItem onClick={() => { setMenuOpen(false); onMove(item) }}>
             移动到...
           </ContextMenuItem>
         )}

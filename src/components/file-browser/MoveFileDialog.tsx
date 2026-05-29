@@ -33,7 +33,7 @@ export function MoveFileDialog({ isOpen, onClose, onMove }: MoveFileDialogProps)
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="移动到">
+    <Modal isOpen={isOpen} onClose={onClose} title={folders.length > 0 ? "移动到..." : "加载中..."}>
       <div className="space-y-4">
         {isLoading ? (
           <div className="flex justify-center py-8">
