@@ -1,46 +1,87 @@
 import { useRef, useState, useEffect } from 'react'
 import * as pdfjs from 'pdfjs-dist'
+import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
+pdfjs.GlobalWorkerOptions.workerSrc = workerUrl
 
 interface PdfPreviewProps {
-  blobUrl: string
+  url: string
 }
 
-export function PdfPreview({ blobUrl }: PdfPreviewProps) {
+export function PdfPreview({ url }: PdfPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [numPages, setNumPages] = useState(0)
   const [pageNum, setPageNum] = useState(1)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const pdfDoc = useRef<pdfjs.PDFDocumentProxy | null>(null)
+  const loadingTask = useRef<pdfjs.PDFDocumentLoadingTask | null>(null)
 
   useEffect(() => {
+    let cancelled = false
     setLoading(true)
-    pdfjs.getDocument(blobUrl).promise.then((doc) => {
+    setError(null)
+    setPageNum(1)
+    setNumPages(0)
+    pdfDoc.current = null
+
+    const task = pdfjs.getDocument(url)
+    loadingTask.current = task
+
+    task.promise.then(async (doc) => {
+      if (cancelled) { doc.destroy(); return }
       pdfDoc.current = doc
       setNumPages(doc.numPages)
-      renderPage(1, doc)
-    }).catch(() => setLoading(false))
-  }, [blobUrl])
+      try {
+        const page = await doc.getPage(1)
+        const viewport = page.getViewport({ scale: 1.5 })
+        const canvas = canvasRef.current
+        if (!canvas) { setLoading(false); return }
+        canvas.width = viewport.width
+        canvas.height = viewport.height
+        await page.render({ canvas, viewport }).promise
+      } catch {
+        if (!cancelled) setError('页面渲染失败')
+      }
+      if (!cancelled) setLoading(false)
+    }).catch((err: unknown) => {
+      if (!cancelled) {
+        setError(err instanceof Error ? `PDF 加载失败: ${err.message}` : 'PDF 加载失败')
+        setLoading(false)
+      }
+    })
 
-  const renderPage = async (num: number, doc?: pdfjs.PDFDocumentProxy) => {
-    const d = doc || pdfDoc.current
-    if (!d || !canvasRef.current) return
-    const page = await d.getPage(num)
-    const viewport = page.getViewport({ scale: 1.5 })
-    const canvas = canvasRef.current
-    canvas.width = viewport.width
-    canvas.height = viewport.height
-    await page.render({ canvas: canvas, viewport }).promise
+    return () => {
+      cancelled = true
+      loadingTask.current?.destroy()
+    }
+  }, [url])
+
+  const changePage = async (delta: number) => {
+    const newPage = pageNum + delta
+    if (newPage < 1 || newPage > numPages || !pdfDoc.current) return
+    setPageNum(newPage)
+    setLoading(true)
+    try {
+      const page = await pdfDoc.current.getPage(newPage)
+      const viewport = page.getViewport({ scale: 1.5 })
+      const canvas = canvasRef.current
+      if (!canvas) { setLoading(false); return }
+      canvas.width = viewport.width
+      canvas.height = viewport.height
+      await page.render({ canvas, viewport }).promise
+    } catch {
+      setError('页面渲染失败')
+    }
     setLoading(false)
   }
 
-  const changePage = (delta: number) => {
-    const newPage = pageNum + delta
-    if (newPage < 1 || newPage > numPages) return
-    setPageNum(newPage)
-    setLoading(true)
-    renderPage(newPage)
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-500 font-medium">{error}</p>
+      </div>
+    )
   }
 
   return (

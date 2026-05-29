@@ -54,8 +54,8 @@
 | P0 | 文件 CRUD | 已完成 | 重命名/删除/移动 |
 | P0 | 图片/视频预览 | 已完成 | 签名 URL + 原生标签 |
 | P0 | 响应式布局 | 已完成 | 手机、平板、电脑适配 |
-| P1 | PDF/文档预览 | 已完成 | PDF iframe + 文本预览 |
-| P1 | 文件搜索 | 待开发 | - |
+| P1 | PDF/文档预览 | 已完成 | pdf.js canvas 渲染，全平台支持 |
+| P1 | 文件搜索 | 已完成 | 全量搜索 + 路径导航 |
 | P1 | 文件排序 | 已完成 | 拖拽排序，持久化到数据库 |
 | P2 | 多文件打包下载 | 待开发 | - |
 | P2 | 存储迁移能力 | 已完成 | Adapter 模式 + 迁移文档 |
@@ -85,6 +85,13 @@
 ```
 docs/
 ├── Vibe coding workflow.md      # 工作流方法论
+├── claude-md-template.md         # CLAUDE.md 模板
+├── skills/                       # 可复用 Skill 库
+│   ├── card-drag-sort/SKILL.md   # 卡片拖拽排序
+│   ├── context-menu/SKILL.md     # 右键/长按上下文菜单
+│   ├── claymorphism-ui/SKILL.md  # Claymorphism UI 系统
+│   ├── storage-adapter/SKILL.md  # 存储适配器模式
+│   └── file-preview/SKILL.md     # 多格式文件预览
 └── project-spec/
     ├── requirements.md           # 详细需求文档
     ├── discussions/              # 讨论记录

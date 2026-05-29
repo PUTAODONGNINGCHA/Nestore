@@ -15,7 +15,6 @@ interface FilePreviewProps {
 
 export function FilePreview({ file, onClose }: FilePreviewProps) {
   const [signedUrl, setSignedUrl] = useState<string | null>(null)
-  const [blobUrl, setBlobUrl] = useState<string | null>(null)
   const [textContent, setTextContent] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -37,12 +36,6 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
         } else {
           const url = await getStorageAdapter().getDownloadUrl(file.storage_path)
           setSignedUrl(url)
-          // For PDF, download as blob for reliable mobile preview
-          if (isPdf) {
-            const resp = await fetch(url)
-            const blob = await resp.blob()
-            setBlobUrl(URL.createObjectURL(blob))
-          }
         }
       } catch {
         setError('加载文件失败')
@@ -51,7 +44,6 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
       }
     }
     load()
-    return () => { if (blobUrl) URL.revokeObjectURL(blobUrl) }
   }, [file.storage_path, isText])
 
   const handleDownload = async () => {
@@ -87,8 +79,8 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
         <>
           {isImage && signedUrl && <ImagePreview src={signedUrl} name={file.name} />}
           {isVideo && signedUrl && <VideoPreview src={signedUrl} name={file.name} />}
-          {isPdf && blobUrl && (
-            <PdfPreview blobUrl={blobUrl} />
+          {isPdf && signedUrl && (
+            <PdfPreview url={signedUrl} />
           )}
           {isText && textContent !== null && <TextPreview content={textContent} />}
           {isOffice && signedUrl && (
