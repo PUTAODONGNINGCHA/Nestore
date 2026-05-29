@@ -5,6 +5,7 @@ import {
   useSensor,
   useSensors,
   type DragEndEvent,
+  type DragStartEvent,
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
 import { FileItemCard } from './FileItemGrid'
@@ -43,6 +44,7 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null)
   const [moveFile, setMoveFile] = useState<FileItem | null>(null)
   const [orderedItems, setOrderedItems] = useState<Entry[]>([])
+  const [draggingType, setDraggingType] = useState<'file' | 'folder' | null>(null)
 
   // Sync orderedItems from folders/files
   useEffect(() => {
@@ -59,8 +61,14 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   )
 
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    const id = String(event.active.id)
+    setDraggingType(id.startsWith('folder-') ? 'folder' : 'file')
+  }, [])
+
   const handleDragEnd = useCallback(async (event: DragEndEvent) => {
     const { active, over } = event
+    setDraggingType(null)
     if (!over || active.id === over.id) return
 
     const activeId = String(active.id)
@@ -196,8 +204,12 @@ export function FileList({ currentFolderId, onNavigate, folders, onRenameFolder,
           <EmptyState onUploadClick={() => uploadInputRef.current?.click()} />
         ) : (
           <div className="bg-white rounded-[32px] shadow-[12px_12px_24px_rgba(160,150,180,0.12),-6px_-6px_16px_rgba(255,255,255,0.6)] p-4 sm:p-5">
-            <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-              <SortableContext items={orderedItems.map(getSortId)}>
+            <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+              <SortableContext
+                items={orderedItems
+                  .filter((item) => draggingType !== 'file' || item.type !== 'folder')
+                  .map(getSortId)}
+              >
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-4">
                   {orderedItems.map((item) => (
                     <FileItemCard
