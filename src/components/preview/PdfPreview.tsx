@@ -5,10 +5,10 @@ import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl
 
 interface PdfPreviewProps {
-  url: string
+  data: ArrayBuffer
 }
 
-export function PdfPreview({ url }: PdfPreviewProps) {
+export function PdfPreview({ data }: PdfPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [numPages, setNumPages] = useState(0)
   const [pageNum, setPageNum] = useState(1)
@@ -16,6 +16,8 @@ export function PdfPreview({ url }: PdfPreviewProps) {
   const [error, setError] = useState<string | null>(null)
   const pdfDoc = useRef<pdfjs.PDFDocumentProxy | null>(null)
   const loadingTask = useRef<pdfjs.PDFDocumentLoadingTask | null>(null)
+  const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+  const scale = isMobile ? 1.0 : 1.5
 
   useEffect(() => {
     let cancelled = false
@@ -25,7 +27,7 @@ export function PdfPreview({ url }: PdfPreviewProps) {
     setNumPages(0)
     pdfDoc.current = null
 
-    const task = pdfjs.getDocument(url)
+    const task = pdfjs.getDocument({ data })
     loadingTask.current = task
 
     task.promise.then(async (doc) => {
@@ -34,7 +36,7 @@ export function PdfPreview({ url }: PdfPreviewProps) {
       setNumPages(doc.numPages)
       try {
         const page = await doc.getPage(1)
-        const viewport = page.getViewport({ scale: 1.5 })
+        const viewport = page.getViewport({ scale })
         const canvas = canvasRef.current
         if (!canvas) { setLoading(false); return }
         canvas.width = viewport.width
@@ -46,7 +48,7 @@ export function PdfPreview({ url }: PdfPreviewProps) {
       if (!cancelled) setLoading(false)
     }).catch((err: unknown) => {
       if (!cancelled) {
-        setError(err instanceof Error ? `PDF 加载失败: ${err.message}` : 'PDF 加载失败')
+        setError(err instanceof Error ? err.message : 'PDF 加载失败')
         setLoading(false)
       }
     })
@@ -55,7 +57,7 @@ export function PdfPreview({ url }: PdfPreviewProps) {
       cancelled = true
       loadingTask.current?.destroy()
     }
-  }, [url])
+  }, [data, scale])
 
   const changePage = async (delta: number) => {
     const newPage = pageNum + delta
@@ -64,7 +66,7 @@ export function PdfPreview({ url }: PdfPreviewProps) {
     setLoading(true)
     try {
       const page = await pdfDoc.current.getPage(newPage)
-      const viewport = page.getViewport({ scale: 1.5 })
+      const viewport = page.getViewport({ scale })
       const canvas = canvasRef.current
       if (!canvas) { setLoading(false); return }
       canvas.width = viewport.width
@@ -78,8 +80,9 @@ export function PdfPreview({ url }: PdfPreviewProps) {
 
   if (error) {
     return (
-      <div className="text-center py-8">
-        <p className="text-red-500 font-medium">{error}</p>
+      <div className="text-center py-8 px-4">
+        <p className="text-red-500 font-medium mb-2">PDF 预览失败</p>
+        <p className="text-[#635F69] text-xs break-all">{error}</p>
       </div>
     )
   }
@@ -105,7 +108,14 @@ export function PdfPreview({ url }: PdfPreviewProps) {
           </button>
         </div>
       )}
-      {loading && <div className="clay-spinner !w-6 !h-6 !border-2 my-8" />}
+      {loading && (
+        <div className="flex flex-col items-center gap-2 my-8">
+          <div className="clay-spinner !w-6 !h-6 !border-2" />
+          <span className="text-xs text-[#635F69]">
+            {numPages > 0 ? `渲染第 ${pageNum} 页...` : '加载中...'}
+          </span>
+        </div>
+      )}
       <canvas ref={canvasRef} className="max-w-full rounded-[24px] shadow-[8px_8px_16px_rgba(160,150,180,0.15)]" />
     </div>
   )

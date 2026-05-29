@@ -17,6 +17,7 @@ const OFFICE_VIEWER = (url: string) => `https://view.officeapps.live.com/op/view
 
 export function FilePreview({ file, onClose }: FilePreviewProps) {
   const [signedUrl, setSignedUrl] = useState<string | null>(null)
+  const [pdfData, setPdfData] = useState<ArrayBuffer | null>(null)
   const [textContent, setTextContent] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -39,6 +40,11 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
         } else {
           const url = await getStorageAdapter().getDownloadUrl(file.storage_path)
           setSignedUrl(url)
+          // For PDF, pre-fetch as ArrayBuffer for fast pdf.js loading
+          if (isPdf) {
+            const resp = await fetch(url)
+            setPdfData(await resp.arrayBuffer())
+          }
         }
       } catch {
         setError('加载文件失败')
@@ -47,7 +53,7 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
       }
     }
     load()
-  }, [file.storage_path, isText])
+  }, [file.storage_path, isText, isPdf])
 
   const handleDownload = async () => {
     try {
@@ -67,19 +73,6 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
     }
   }
 
-  const handleMobilePdfPreview = async () => {
-    if (!signedUrl) return
-    try {
-      const resp = await fetch(signedUrl)
-      const blob = await resp.blob()
-      const blobUrl = URL.createObjectURL(blob)
-      window.open(blobUrl, '_blank')
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 60000)
-    } catch {
-      handleDownload()
-    }
-  }
-
   return (
     <Modal isOpen onClose={onClose} title={file.name}>
       {isLoading ? (
@@ -95,20 +88,8 @@ export function FilePreview({ file, onClose }: FilePreviewProps) {
         <>
           {isImage && signedUrl && <ImagePreview src={signedUrl} name={file.name} />}
           {isVideo && signedUrl && <VideoPreview src={signedUrl} name={file.name} />}
-          {isPdf && signedUrl && (
-            isMobile ? (
-              <div className="text-center py-8 space-y-3">
-                <p className="text-[#635F69] text-sm">正在打开本地预览...</p>
-                <div className="flex justify-center gap-3">
-                  <Button variant="primary" onClick={handleMobilePdfPreview}>
-                    预览
-                  </Button>
-                  <Button variant="secondary" onClick={handleDownload}>下载</Button>
-                </div>
-              </div>
-            ) : (
-              <PdfPreview url={signedUrl} />
-            )
+          {isPdf && pdfData && (
+            <PdfPreview data={pdfData} />
           )}
           {isText && textContent !== null && <TextPreview content={textContent} />}
           {isOffice && signedUrl && (
